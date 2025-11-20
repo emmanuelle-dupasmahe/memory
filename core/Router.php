@@ -36,6 +36,16 @@ class Router
      * @param string $uri    URI de la requête (ex: "/articles")
      * @param string $method Méthode HTTP utilisée (GET, POST, etc.)
      */
+    /**
+     * Enregistre une route de type POST
+     *
+     * @param string $path   Chemin de la route (ex: "/game/flip")
+     * @param string $action Action à exécuter (ex: "App\Controllers\GameController@flip")
+     */
+    public function post(string $path, string $action): void
+    {
+        $this->routes['POST'][$path] = $action;
+    }
     public function dispatch(string $uri, string $method): void
     {
         // On extrait uniquement le chemin (sans paramètres GET ou #ancre)
@@ -55,6 +65,7 @@ class Router
                 return;
             }
         }
+        
 
         // Si aucune route trouvée, on renvoie une erreur 404
         http_response_code(404);
