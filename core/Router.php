@@ -48,6 +48,14 @@ class Router
     }
     public function dispatch(string $uri, string $method): void
     {
+
+       //$path = parse_url($uri, PHP_URL_PATH) ?? '/';
+    //echo "Méthode reçue: " . $method . "<br>";
+    //echo "Chemin analysé: " . $path . "<br>";
+    // Arrêtez le script pour voir le résultat :
+    // exit;
+    echo ". ";
+
         // On extrait uniquement le chemin (sans paramètres GET ou #ancre)
         $path = parse_url($uri, PHP_URL_PATH) ?? '/';
 

@@ -17,9 +17,9 @@ class GameModel {
 
     public function __construct() {
         // Assurez-vous que la session est démarrée avant l'instanciation du modèle
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
+        //if (session_status() == PHP_SESSION_NONE) {
+        //    session_start();
+        //}
         $this->pdo = Database::getPdo();
     }
 

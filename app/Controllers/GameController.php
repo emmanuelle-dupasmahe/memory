@@ -24,6 +24,14 @@ class GameController extends BaseController // Adapter l'héritage à votre stru
      */
     public function index(): void
     {
+
+        if (empty($_SESSION['memory_board'])) {
+             // Redirige vers la nouvelle partie si la session est vide
+             $this->gameModel->initializeBoard();
+             // Optionnel : Rediriger après initialisation pour charger la page 'propre'
+             // header('Location: /game');
+             // exit;
+        }
         // 1. Récupérer l'état du plateau. Initialise si c'est la première visite.
         $board = $this->gameModel->getBoard();
         $turns = $this->gameModel->getTurns();
@@ -32,7 +40,7 @@ class GameController extends BaseController // Adapter l'héritage à votre stru
         $boardData = array_map(fn($card) => $card->toArray(), $board);
 
         // 2. Charger la vue (Nous supposerons que votre Router appelle la méthode 'render' de BaseController)
-        $this->render('game', [
+        $this->render('game/index', [
             'board' => $boardData,
             'turns' => $turns,
             'isGameOver' => $this->gameModel->isGameOver()
@@ -46,7 +54,7 @@ class GameController extends BaseController // Adapter l'héritage à votre stru
     {
         $this->gameModel->initializeBoard();
         // Redirige vers la page de jeu
-        header('Location: /game'); 
+        header('Location: /game/index'); 
         exit;
     }
 
@@ -110,7 +118,7 @@ private function renderGameView(?string $message = null): void
     $boardData = array_map(fn($card) => $card->toArray(), $board);
     $turns = $this->gameModel->getTurns();
 
-    $this->render('game', [
+    $this->render('game/index', [
         'board' => $boardData,
         'turns' => $turns,
         'isGameOver' => $this->gameModel->isGameOver(),

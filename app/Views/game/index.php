@@ -1,4 +1,9 @@
-<?php $canClick = $canClick && !$isGameOver; ?>
+<?php 
+
+$canClick = $canClick ?? true; 
+$isGameOver = $isGameOver ?? false;
+
+?>
 <h1>Memory Game - Snoopy Edition</h1>
 
 <div id="memory-grid" class="memory-grid">

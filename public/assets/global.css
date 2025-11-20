@@ -1,7 +1,134 @@
 
 
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    /*body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
     nav { background: #f4f4f4; padding: 10px; }
     nav a { margin-right: 10px; text-decoration: none; color: #333; }
-    main { padding: 20px; }
-  
+    main { padding: 20px; }*/
+
+
+/* --- GRILLE DU JEU --- */
+.memory-grid {
+    display: grid;
+    /* 12 cartes au total, faisons une grille 4x3 */
+    grid-template-columns: repeat(4, 1fr); 
+    grid-template-rows: repeat(3, 1fr); 
+    gap: 15px;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+/* --- LE BOUTON/LA CARTE (Container) --- */
+.card-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1; /* Force les cartes à être carrées */
+    perspective: 1000px; /* Ajoute l'effet de profondeur pour la rotation 3D */
+}
+
+/* Désactiver le pointeur pour les boutons désactivés ou trouvés */
+.card-button:disabled,
+.card.matched {
+    cursor: default;
+}
+
+/* Le conteneur interne pour la rotation */
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s; /* Temps de l'animation de retournement */
+    transform-style: preserve-3d; /* Nécessaire pour l'effet 3D */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border-radius: 8px;
+}
+
+/* --- RECTO ET VERSO --- */
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Cache la face non orientée vers l'utilisateur */
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Le dos de la carte (visible par défaut) */
+.card-back {
+    background-color: #333; /* Couleur de fond du verso */
+    /* L'image de verso doit être ici */
+}
+.card-back img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Le recto de la carte (caché par défaut, tourné de 180 degrés) */
+.card-front {
+    background-color: white;
+    transform: rotateY(180deg);
+}
+.card-front img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Assure que le personnage est visible */
+    padding: 5px;
+}
+
+/* --- ÉTATS GÉRÉS PAR PHP --- */
+
+/* État "Retourné" : Le conteneur interne pivote de 180 degrés */
+.card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+
+
+/* État "Trouvé" : Ajoute un style visuel et empêche le clic */
+.card.matched .card-inner {
+    /* Retirez l'opacité si elle rend la carte trop pâle */
+    /* opacity: 0.5; <-- À enlever ou commenter */
+    
+    /* Le style visuel pour indiquer que la carte est trouvée */
+    box-shadow: 0 4px 15px rgba(0, 21, 128, 0.6); /* Ajout d'une ombre plus marquée */
+    border: 3px solid rgb(38, 0, 128); /* Garder cette bordure ou similaire */
+}
+/* --- Ajout de règles pour stabiliser l'affichage 3D --- */
+
+/* Assure que la face arrière est bien à son point de départ 0deg (pas obligatoire mais utile) */
+.card-back {
+    /* ... autres styles ... */
+    transform: rotateY(0deg); /* <--- AJOUTER CETTE LIGNE */
+}
+
+/* Assurez-vous que le conteneur principal permet la rotation 3D */
+.card {
+    /* Ajouter la perspective au conteneur le plus externe pour la compatibilité */
+    perspective: 1000px; /* <--- AJOUTER CETTE LIGNE, MÊME SI ELLE EST DANS .card-button */
+}
+
+
+
+/*Lorsque la carte est trouvée (matched) ET retournée (flipped)
+.card.is-matched .card-front {
+    /* On cache l'arrière (le dos gris) */
+   /* visibility: hidden;
+}
+
+.card.is-matched .card-back {
+    /* On montre le contenu (le dessin) */
+    /*visibility: visible;
+    /* On rend la carte non cliquable une fois qu'elle est trouvée */
+    /*pointer-events: none; 
+    opacity: 1; /* S'assurer qu'elle n'est pas rendue transparente par erreur */
+
+
+/* Assurez-vous que le conteneur lui-même reste visible */
+/*.card.is-matched {
+    transform: rotateY(0deg); /* La laisse face visible */
+    border: 3px solid #4c57af; /* Ajoute une bordure verte pour le feedback visuel */

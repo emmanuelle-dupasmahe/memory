@@ -1,7 +1,13 @@
 <?php
 
-
+ob_start(); 
 require_once __DIR__ ."/../vendor/autoload.php";
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__. "/../");
 $dotenv->safeLoad();
@@ -24,10 +30,12 @@ $router = new Router();
 
 
 // Affichage et Initialisation
+$router->get('/', 'App\\Controllers\\GameController@index'); //j'ai fait un changement ici j'ai enlevé /game
 $router->get('/game', 'App\\Controllers\\GameController@index');
-$router->get('/game/new', 'App\\Controllers\\GameController@newGame');
+//$router->get('/game/new', 'App\\Controllers\\GameController@newGame');
 
 // Actions de jeu (POST : pour les formulaires sans JS)
+$router->post('/game/new', 'App\\Controllers\\GameController@newGame');
 $router->post('/game/flip', 'App\\Controllers\\GameController@flip');
 $router->post('/game/checkAndReset', 'App\\Controllers\\GameController@checkAndReset');
 
@@ -43,3 +51,12 @@ $router->get('/profile', 'App\\Controllers\\ScoreController@profile');
 // Exécution du routeur :
 // On analyse l'URI et la méthode HTTP pour appeler le contrôleur et la méthode correspondants
 $router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
+
+// 3. Dispatcher la requête
+//$uri = $_SERVER['REQUEST_URI'] ?? '/';
+//$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+
+//$router->dispatch($uri, $method);
+
+// 4. Vider le buffer de sortie et envoyer le contenu au navigateur
+ob_end_flush();
