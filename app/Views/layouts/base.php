@@ -11,24 +11,34 @@
 <head>
   <meta charset="utf-8">
 
-  <!-- Titre de la page (sécurisé avec htmlspecialchars, valeur par défaut si non défini) -->
-  <title><?= isset($title) ? htmlspecialchars($title, ENT_QUOTES, 'UTF-8') : 'Mini MVC' ?></title>
+  <title><?= isset($title) ? htmlspecialchars($title, ENT_QUOTES, 'UTF-8') : 'Memory Snoopy' ?></title>
 
-  <!-- Bonne pratique : rendre le site responsive -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/assets/global.css">
-
   
+  <link rel="stylesheet" href="/assets/css/style.css"> 
 </head>
 <body>
-  <!-- Menu de navigation global -->
   <nav>
-    <a href="/">Accueil</a> | 
-    <a href="/articles">Articles</a>
-    <a href="/about">À propos</a>
+    <ul>
+        <li><a href="/">Accueil</a></li>
+        <li><a href="/game">Jouer au Memory 🃏</a></li>
+        <li><a href="/leaderboard">Classement 🏆</a></li>
+        
+        <?php 
+        // OPTIONNEL : Lien vers le profil si l'utilisateur est "connecté" (simulé ici par la session)
+        if (isset($_SESSION['username'])): 
+        ?>
+            <li>
+                <a href="/profile?username=<?= urlencode($_SESSION['username'] ?? 'Visiteur') ?>">
+                    Mon Profil
+                </a>
+            </li>
+        <?php endif; ?>
+        
+        </ul>
   </nav>
 
-  <!-- Contenu principal injecté depuis BaseController -->
   <main>
     <?= $content ?>
   </main>
