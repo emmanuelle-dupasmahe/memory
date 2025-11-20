@@ -112,23 +112,40 @@
     perspective: 1000px; /* <--- AJOUTER CETTE LIGNE, MÊME SI ELLE EST DANS .card-button */
 }
 
-
-
-/*Lorsque la carte est trouvée (matched) ET retournée (flipped)
-.card.is-matched .card-front {
-    /* On cache l'arrière (le dos gris) */
-   /* visibility: hidden;
+/* --- BARRE D'ACTION EN HAUT --- */
+.action-bar {
+    display: flex; /* Active Flexbox */
+    justify-content: space-between; /* Espace les blocs d'actions */
+    align-items: center; /* Centre verticalement les éléments */
+    max-width: 800px;
+    margin: 10px auto; /* Centre la barre d'action au-dessus de la grille */
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
 }
 
-.card.is-matched .card-back {
-    /* On montre le contenu (le dessin) */
-    /*visibility: visible;
-    /* On rend la carte non cliquable une fois qu'elle est trouvée */
-    /*pointer-events: none; 
-    opacity: 1; /* S'assurer qu'elle n'est pas rendue transparente par erreur */
+.action-block-continue p {
+    /* Ajuster la marge pour que le texte soit bien aligné avec le bouton Continuer */
+    margin-right: 15px;
+    display: inline-block;
+    font-weight: bold;
+}
 
+/* Style de base pour les boutons si vous n'en avez pas déjà un pour .button */
+.button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
 
-/* Assurez-vous que le conteneur lui-même reste visible */
-/*.card.is-matched {
-    transform: rotateY(0deg); /* La laisse face visible */
-    border: 3px solid #4c57af; /* Ajoute une bordure verte pour le feedback visuel */
+.continue-button {
+    background-color: #ff9800; /* Orange pour l'action urgente */
+    color: white;
+}
+
+.new-game-button {
+    background-color: #4CAF50; /* Vert pour le nouveau jeu */
+    color: white;
+}
