@@ -30,20 +30,30 @@ class ScoreController extends BaseController
     }
 
     /**
-     * Affiche le profil détaillé d'un joueur (ex: /score/profile/Alice).
+     * Affiche le profil détaillé d'un joueur.
+     * Route : GET /profile?username={username}
      */
-    public function profile(string $username): void
+    public function profile(): void // Ne prend plus le paramètre en argument de méthode
     {
-        // Récupère les données de progression du joueur
+        // 1. Récupérer le nom d'utilisateur depuis l'URL (paramètre GET)
+        $username = $_GET['username'] ?? null;
+
+        if (!$username) {
+            // Si le paramètre est manquant, rediriger ou afficher une erreur
+            $this->render('home/404', ['message' => "Nom d'utilisateur manquant pour afficher le profil."]);
+            return;
+        }
+        
+        // 2. Récupérer les données du joueur via le Modèle
         $playerData = $this->scoreModel->getPlayerProfile($username);
 
         if (!$playerData) {
-            // Gérer le cas où l'utilisateur n'existe pas (affichage d'une erreur)
+            // Gérer le cas où l'utilisateur n'existe pas
             $this->render('home/404', ['message' => "Joueur '{$username}' non trouvé."]);
             return;
         }
 
-        // Affiche la vue 'score/profile.php'
+        // 3. Afficher la vue 'score/profile.php'
         $this->render('score/profile', [
             'profile' => $playerData
         ]);
