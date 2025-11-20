@@ -5,7 +5,7 @@ namespace App\Controllers;
 
 use App\Models\GameModel;
 use App\Models\ScoreModel; // Nécessaire pour l'enregistrement du score en fin de partie
-use App\Core\BaseController; // Si vous utilisez BaseController
+use Core\BaseController; 
 
 class GameController extends BaseController // Adapter l'héritage à votre structure
 {
@@ -119,4 +119,19 @@ private function renderGameView(?string $message = null): void
         'canClick' => count($_SESSION['memory_flipped'] ?? []) < 2
     ]);
 }
+    public function checkAndReset(): void 
+{
+    // Vérifie si les cartes correspondent (dans le modèle)
+    $isMatch = $this->gameModel->checkMatch(); 
+    
+    if (!$isMatch) {
+        // Si ce n'est pas un match, le modèle va les masquer (unflip)
+        $this->gameModel->unflipAll(); 
+    }
+    // Redirige pour afficher le plateau mis à jour
+    header('Location: /game');
+    exit;
 }
+}
+
+
