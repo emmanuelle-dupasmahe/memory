@@ -9,6 +9,19 @@ $newGameUrl = '/game/new';
 
 ?>
 
+<?php
+// Vérifiez si l'utilisateur est connecté
+$isLoggedIn = isset($_SESSION['user_id']) && isset($_SESSION['username']);
+$username = $_SESSION['username'] ?? 'Invité'; 
+?>
+
+<div class="user-info">
+    <?php if ($isLoggedIn): ?>
+        <p>Bienvenue, <?= htmlspecialchars($username) ?> !</p>
+    <?php else: ?>
+        <p>Vous jouez en tant qu'Invité. <a href="/register">Inscrivez-vous ici</a> pour enregistrer votre score !</p>
+    <?php endif; ?>
+</div>
 
 <div class="action-bar">
     <?php 
