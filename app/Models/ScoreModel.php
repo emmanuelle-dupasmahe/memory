@@ -3,8 +3,8 @@
 
 namespace App\Models;
 
-use Core\Database; // On utilise la classe Database que vous venez de montrer
-use App\Entities\Player; // Pour hydrater l'objet Player
+use Core\Database; // Utilisation de la classe Database
+use App\Entities\Player; // Pour mettre à jourl'objet Player
 use PDO;
 
 class ScoreModel
@@ -17,7 +17,7 @@ class ScoreModel
         $this->pdo = Database::getPdo();
     }
 
-    // --- 1. Gestion des Utilisateurs (Connexion/Inscription simplifiée) ---
+    // Gestion des Utilisateurs (Connexion/Inscription simplifiée) 
 
     /**
      * Trouve un utilisateur par son nom d'utilisateur ou le crée s'il n'existe pas.
@@ -33,7 +33,7 @@ class ScoreModel
             return $user; // Utilisateur trouvé
         }
 
-        // 2. Si non trouvé, créer le nouvel utilisateur (avec un mot de passe fictif/simple pour l'exemple)
+        // Si non trouvé, créer le nouvel utilisateur 
         $hashedPassword = password_hash('memory_default', PASSWORD_DEFAULT);
         $stmt = $this->pdo->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
         $success = $stmt->execute(['username' => $username, 'password' => $hashedPassword]);
@@ -46,7 +46,7 @@ class ScoreModel
         return false;
     }
 
-    // --- 2. Enregistrement des Scores ---
+    // Enregistrement des Scores 
 
     /**
      * Enregistre le score (nombre de coups) d'une partie terminée.
@@ -60,7 +60,7 @@ class ScoreModel
         ]);
     }
 
-    // --- 3. Affichage du Classement (Leaderboard) ---
+    // Affichage du Classement (Leaderboard) ---
 
     /**
      * Récupère le classement des 10 meilleurs joueurs (basé sur le MINIMUM de coups).
@@ -87,7 +87,7 @@ class ScoreModel
         return $stmt->fetchAll(); // Retourne un tableau des meilleurs joueurs
     }
 
-    // --- 4. Affichage du Profil Individuel ---
+    // Affichage du Profil Individuel 
 
     /**
      * Récupère les scores détaillés et les statistiques d'un joueur spécifique.
@@ -103,12 +103,12 @@ class ScoreModel
             return false;
         }
 
-        // 2. Récupérer tous ses scores, triés par date (du plus récent au plus ancien)
+        // Récupérer tous ses scores, triés par date (du plus récent au plus ancien)
         $scoresStmt = $this->pdo->prepare("SELECT coups, date_partie FROM scores WHERE user_id = :user_id ORDER BY date_partie DESC");
         $scoresStmt->execute(['user_id' => $user['id']]);
         $allScores = $scoresStmt->fetchAll();
 
-        // 3. Calculer les statistiques agrégées
+        // Calculer les statistiques 
         $bestScore = PHP_INT_MAX;
         $gamesPlayed = count($allScores);
         if ($gamesPlayed > 0) {

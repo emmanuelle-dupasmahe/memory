@@ -37,13 +37,13 @@ class GameModel {
     public function initializeBoard(): void {
         $cardTypes = $this->getCardTypesFromDatabase(); // 6 types de cartes
         
-        // 1. Créer les paires (doubler les 6 types)
+        // Créer les paires 
         $boardData = array_merge($cardTypes, $cardTypes);
         
-        // 2. Mélanger les cartes
+        // Mélanger les cartes
         shuffle($boardData);
 
-        // 3. Hydrater la liste d'objets Card et les stocker en session
+        //  Hydrater la liste d'objets Card et les stocker en session
         $board = [];
         foreach ($boardData as $index => $data) {
             $board[$index] = new Card(
@@ -87,7 +87,7 @@ class GameModel {
         $board = $this->getBoard();
         $flippedIds = $_SESSION[self::FLIPPED_KEY];
         
-        // 1. Vérifier si l'ID est valide et si la carte n'est pas déjà visible ou trouvée
+        // Vérifier si l'ID est valide et si la carte n'est pas déjà visible ou trouvée
         if (!isset($board[$boardId]) || $board[$boardId]->isFlipped()) {
             return $this->isGameOver();
         }
@@ -95,7 +95,7 @@ class GameModel {
         /** @var Card $card */
         $card = $board[$boardId];
         
-        // 2. Si moins de 2 cartes sont retournées, on retourne celle-ci
+        // Si moins de 2 cartes sont retournées, on retourne celle-ci
         if (count($flippedIds) < 2) {
             $card->flip();
             $flippedIds[] = $boardId;
