@@ -26,7 +26,7 @@
     <nav class="main-nav">
         <ul class="nav-list">
             <li><a href="/" class="nav-link">🏠</a></li> 
-            <li><a href="/game" class="nav-link">Jouer au Memory 🃏</a></li>
+            <li><a href="/game" class="nav-link">Jouer</a></li>
             <li><a href="/leaderboard" class="nav-link">Classement 🏆</a></li>
             <li><a href="/register" class="nav-link">Inscription </a></li>
         </ul>
