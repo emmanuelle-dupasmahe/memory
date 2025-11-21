@@ -178,7 +178,7 @@ a:hover {
     max-width: 800px;
     margin: 10px auto; /* Centre la barre d'action au-dessus de la grille */
     padding: 10px 0;
-    border-bottom: 1px solid #ccc;
+    /*border-bottom: 1px solid #ccc;*/
 }
 
 .action-block-continue p {
@@ -199,13 +199,13 @@ a:hover {
 }
 
 .continue-button {
-    background-color: #ff9800; /* Orange pour l'action urgente */
-    color: white;
+    background-color: #341ceb; 
+    color:#dffd35;
 }
 
 .new-game-button {
-    background-color: #4CAF50; /* Vert pour le nouveau jeu */
-    color: white;
+    background-color: #341ceb; 
+    color: rgb(228, 235, 32);
 }
 .fixed-continue-prompt {
     /* Propriété clé : rend le conteneur fixe par rapport à la fenêtre */
@@ -219,8 +219,8 @@ a:hover {
     transform: translateX(-50%); /* Décalage de 50% vers la gauche pour centrer l'élément */
     
     /* Style pour attirer l'attention */
-    background-color: #35fafd; /* Jaune vif */
-    border: 3px solid #e6a646;
+    background-color: #dffd35; 
+    border: 3px solid #341ceb; 
     padding: 15px 25px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);

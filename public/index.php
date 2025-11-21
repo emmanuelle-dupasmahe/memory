@@ -47,6 +47,12 @@ $router->get('/leaderboard', 'App\\Controllers\\ScoreController@leaderboard');
 $router->get('/profile', 'App\\Controllers\\ScoreController@profile');
 
 
+// --- Routes d'Authentification (Inscription) ---
+// Afficher le formulaire simplifié (méthode GET)
+$router->get('/register', 'App\\Controllers\\AuthController@showRegisterForm');
+// Traiter les données (méthode POST)
+$router->post('/register', 'App\\Controllers\\AuthController@register');
+
 // Exécution du routeur :
 // On analyse l'URI et la méthode HTTP pour appeler le contrôleur et la méthode correspondants
 $router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
