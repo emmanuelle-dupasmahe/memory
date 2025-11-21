@@ -24,22 +24,31 @@ class GameController extends BaseController // Adapter l'héritage à votre stru
      */
     public function index(): void
     {
-
+        
+//session_destroy();
         if (empty($_SESSION['memory_board'])) {
+               
              // Redirige vers la nouvelle partie si la session est vide
              $this->gameModel->initializeBoard();
              // Optionnel : Rediriger après initialisation pour charger la page 'propre'
              // header('Location: /game');
              // exit;
         }
-        // 1. Récupérer l'état du plateau. Initialise si c'est la première visite.
+        // Récupérer l'état du plateau. Initialise si c'est la première visite.
         $board = $this->gameModel->getBoard();
+    
         $turns = $this->gameModel->getTurns();
-        
+
+    //    DEBUG CODE
+    //     echo "<pre>";
+    //     var_dump($board);
+    //     echo "</pre>";
+    //     exit;
+
         // Convertir les objets Card en tableaux pour la vue, si nécessaire
         $boardData = array_map(fn($card) => $card->toArray(), $board);
 
-        // 2. Charger la vue (Nous supposerons que votre Router appelle la méthode 'render' de BaseController)
+        // Charger la vue 
         $this->render('game/index', [
             'board' => $boardData,
             'turns' => $turns,
@@ -54,7 +63,7 @@ class GameController extends BaseController // Adapter l'héritage à votre stru
     {
         $this->gameModel->initializeBoard();
         // Redirige vers la page de jeu
-        header('Location: /game/index'); 
+        header('Location: /game'); 
         exit;
     }
 
@@ -69,7 +78,7 @@ class GameController extends BaseController // Adapter l'héritage à votre stru
         exit;
     }
 
-    // --- ÉTAPE 1 : Gérer l'état après le clic ---
+    // Gérer l'état après le clic 
     $message = null;
     $flippedCount = count($_SESSION['memory_flipped'] ?? []);
     
@@ -82,7 +91,7 @@ class GameController extends BaseController // Adapter l'héritage à votre stru
     // Maintenant, retourner la nouvelle carte
     $this->gameModel->flipCard($boardId);
     
-    // --- ÉTAPE 2 : Vérifier le nouvel état ---
+    // Vérifier le nouvel état 
     
     // On vérifie si DEUX cartes sont maintenant retournées après ce clic
     if (count($_SESSION['memory_flipped'] ?? []) === 2) {
@@ -123,7 +132,7 @@ private function renderGameView(?string $message = null): void
         'turns' => $turns,
         'isGameOver' => $this->gameModel->isGameOver(),
         'message' => $message,
-        // Si 2 cartes sont retournées, nous bloquons les autres clics.
+        // Si 2 cartes sont retournées, on bloque les autres clics.
         'canClick' => count($_SESSION['memory_flipped'] ?? []) < 2
     ]);
 }

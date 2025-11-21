@@ -54,7 +54,7 @@ class Router
     //echo "Chemin analysé: " . $path . "<br>";
     // Arrêtez le script pour voir le résultat :
     // exit;
-    echo ". ";
+   // echo ". ";
 
         // On extrait uniquement le chemin (sans paramètres GET ou #ancre)
         $path = parse_url($uri, PHP_URL_PATH) ?? '/';

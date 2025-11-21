@@ -55,4 +55,26 @@ class Card {
             'isMatched' => $this->isMatched,
         ];
     }
+
+     public function __serialize(): array
+    {
+        return [
+            'boardId' => $this->boardId,
+            'typeId' => $this->typeId,
+            'name' => $this->personnageName,
+            'imagePath' => $this->imagePath,
+            'isFlipped' => $this->isFlipped,
+            'isMatched' => $this->isMatched,
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+       $this->boardId = $data['boardId'];
+       $this->typeId = $data['typeId'];
+       $this->personnageName = $data['name'];
+       $this->imagePath = $data['imagePath'];
+       $this->isFlipped = $data['isFlipped'];
+       $this->isMatched = $data['isMatched'];
+    }
 }

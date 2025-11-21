@@ -1,10 +1,66 @@
 
 
-    /*body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    nav { background: #f4f4f4; padding: 10px; }
-    nav a { margin-right: 10px; text-decoration: none; color: #333; }
-    main { padding: 20px; }*/
+ /* --- STYLE GLOBAL DU CORPS ET LIENS --- */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0; /* Important : supprime la marge par défaut du navigateur */
+    background-color: #cbf0e3; /* Fond léger */
+    color: #163aec;
+}
 
+a {
+    text-decoration: none; 
+    color: #163aec;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #f0ed19;
+}
+
+/* --- EN-TÊTE PRINCIPAL (HEADER) --- */
+.main-header {
+    background-color: #a0c9e7; /* Fond blanc propre */
+    padding: 15px 30px;
+    border-bottom: 3px solid #0d28ad; 
+    display: flex; /* Active Flexbox */
+    justify-content: space-between; /* Place le titre et la nav aux extrémités */
+    align-items: center; /* Centre verticalement le titre et la nav */
+    box-shadow: 0 2px 5px rgba(187, 223, 234, 0.1);
+}
+
+.site-title {
+    font-size: 1.8em;
+    font-weight: bold;
+    color:  #0d28ad; 
+}
+
+/* --- NAVIGATION (NAV) --- */
+
+
+.main-nav .nav-list li:first-child .nav-link {
+    font-size: 1.5em; /* Vous pouvez ajuster cette valeur */
+    line-height: 1; /* Assure que l'icône ne crée pas trop d'espace vertical */
+}
+.nav-list {
+    list-style: none; 
+    padding: 0;
+    margin: 0;
+    display: flex; /* Alignement horizontal des liens */
+    gap: 25px; /* Espace entre les liens */
+}
+
+.nav-link {
+    font-size: 1.1em;
+    font-weight: 500;
+    padding: 5px 0;
+    color: #320cb0;
+}
+
+.nav-link:hover {
+    color: #e2e615;
+    border-bottom: 2px solid  #0d28ad; /* Effet visuel au survol */
+}
 
 /* --- GRILLE DU JEU --- */
 .memory-grid {
@@ -109,7 +165,9 @@
 /* Assurez-vous que le conteneur principal permet la rotation 3D */
 .card {
     /* Ajouter la perspective au conteneur le plus externe pour la compatibilité */
-    perspective: 1000px; /* <--- AJOUTER CETTE LIGNE, MÊME SI ELLE EST DANS .card-button */
+    /*perspective: 1000px; /* <--- AJOUTER CETTE LIGNE, MÊME SI ELLE EST DANS .card-button */
+    width: 100%;
+    height: 100%;
 }
 
 /* --- BARRE D'ACTION EN HAUT --- */
@@ -148,4 +206,23 @@
 .new-game-button {
     background-color: #4CAF50; /* Vert pour le nouveau jeu */
     color: white;
+}
+.fixed-continue-prompt {
+    /* Propriété clé : rend le conteneur fixe par rapport à la fenêtre */
+    position: fixed; 
+    
+    /* Positionnement : en bas à 20px du bord de la fenêtre */
+    bottom: 20px; 
+    
+    /* Positionnement : centré horizontalement */
+    left: 50%;
+    transform: translateX(-50%); /* Décalage de 50% vers la gauche pour centrer l'élément */
+    
+    /* Style pour attirer l'attention */
+    background-color: #35fafd; /* Jaune vif */
+    border: 3px solid #e6a646;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* Assure qu'il est au-dessus du reste du contenu */
 }

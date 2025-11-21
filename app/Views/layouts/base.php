@@ -19,11 +19,20 @@
   <link rel="stylesheet" href="/assets/css/style.css"> 
 </head>
 <body>
-  <nav>
-    <ul>
-        <li><a href="/">Accueil</a></li>
-        <li><a href="/game">Jouer au Memory 🃏</a></li>
-        <li><a href="/leaderboard">Classement 🏆</a></li>
+
+<header class="main-header">
+    <div class="site-title">Memory Game - Snoopy Edition</div>
+    
+    <nav class="main-nav">
+        <ul class="nav-list">
+            <li><a href="/" class="nav-link">🏠</a></li> 
+            <li><a href="/game" class="nav-link">Jouer au Memory 🃏</a></li>
+            <li><a href="/leaderboard" class="nav-link">Classement 🏆</a></li>
+            <li><a href="/Entities/Player" class="nav-link">Inscription </a></li>
+        </ul>
+    </nav>
+</header>
+  
         
         <?php 
         // OPTIONNEL : Lien vers le profil si l'utilisateur est "connecté" (simulé ici par la session)

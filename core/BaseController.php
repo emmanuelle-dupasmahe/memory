@@ -4,8 +4,7 @@ namespace Core;
 /**
  * Classe BaseController
  * ---------------------
- * Classe mère dont hériteront tous les contrôleurs.
- * Elle centralise les fonctionnalités communes, notamment le rendu des vues.
+ * 
  */
 class BaseController
 {

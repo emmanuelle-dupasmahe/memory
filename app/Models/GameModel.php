@@ -35,6 +35,7 @@ class GameModel {
      * Initialise ou réinitialise un nouveau plateau de jeu de 12 cartes (6 paires).
      */
     public function initializeBoard(): void {
+     
         $cardTypes = $this->getCardTypesFromDatabase(); // 6 types de cartes
         
         // Créer les paires 
@@ -53,9 +54,9 @@ class GameModel {
                 $data['image_recto']
             );
         }
-
+   
         // Réinitialiser les variables de session
-        $_SESSION[self::SESSION_KEY] = $board;
+        $_SESSION[self::SESSION_KEY] = serialize($board);
         $_SESSION[self::TURNS_KEY] = 0;
         $_SESSION[self::FLIPPED_KEY] = [];
     }
@@ -64,12 +65,31 @@ class GameModel {
      * Retourne le plateau de jeu (liste d'objets Card) depuis la session.
      */
     public function getBoard(): array {
-        if (!isset($_SESSION[self::SESSION_KEY])) {
-            $this->initializeBoard();
-        }
-        return $_SESSION[self::SESSION_KEY];
+
+    if (!isset($_SESSION[self::SESSION_KEY])) {
+        $this->initializeBoard();
     }
     
+    $board = unserialize($_SESSION[self::SESSION_KEY]); 
+
+    // Vérifie si la désérialisation a échoué (false) ou si ce n'est pas un tableau.
+    if ($board === false || !is_array($board)) {
+        // Logique de récupération forcée : On réinitialise le plateau
+        error_log("Avertissement: Données de session du plateau corrompues. Réinitialisation.");
+        $this->initializeBoard();
+        
+        // On récupère le nouveau plateau initialisé (ce qui devrait marcher)
+        $board = unserialize($_SESSION[self::SESSION_KEY]);
+        
+        // Au cas où la réinitialisation elle-même échouerait (cas très rare)
+        if ($board === false || !is_array($board)) {
+            // Retourne un tableau vide pour éviter un crash fatal à la vue
+            return [];
+        }
+    }
+    
+    return $board; 
+}
     /**
      * Récupère le nombre de tours joués.
      */
@@ -100,7 +120,7 @@ class GameModel {
             $card->flip();
             $flippedIds[] = $boardId;
             $_SESSION[self::FLIPPED_KEY] = $flippedIds;
-            $_SESSION[self::SESSION_KEY] = $board;
+            $_SESSION[self::SESSION_KEY] = serialize($board);//serialize
 
             // Si c'est la deuxième carte, on incrémente le nombre de tours
             if (count($flippedIds) === 2) {
@@ -123,7 +143,7 @@ class GameModel {
         $flippedIds = $_SESSION[self::FLIPPED_KEY];
         if (count($flippedIds) !== 2) return false;
 
-        $board = $_SESSION[self::SESSION_KEY];
+        $board = unserialize($_SESSION[self::SESSION_KEY]);//unserialize
         
         /** @var Card $card1 */
         $card1 = $board[$flippedIds[0]];
@@ -141,7 +161,7 @@ class GameModel {
             // Le Contrôleur devra appeler unflipAll après un court délai côté client.
         }
 
-        $_SESSION[self::SESSION_KEY] = $board;
+        $_SESSION[self::SESSION_KEY] = serialize($board);//serialize
         $_SESSION[self::FLIPPED_KEY] = []; // Réinitialiser pour la prochaine tentative
         
         return $isMatch;
@@ -151,13 +171,13 @@ class GameModel {
      * Retourne toutes les cartes qui ne sont pas trouvées.
      */
     public function unflipAll(): void {
-        $board = $_SESSION[self::SESSION_KEY];
+        $board = unserialize($_SESSION[self::SESSION_KEY]);//unserialize
         
         /** @var Card $card */
         foreach ($board as $card) {
             $card->unflip();
         }
-        $_SESSION[self::SESSION_KEY] = $board;
+        $_SESSION[self::SESSION_KEY] = serialize($board);//serialize
         $_SESSION[self::FLIPPED_KEY] = [];
     }
 
@@ -166,9 +186,12 @@ class GameModel {
      */
     public function isGameOver(): bool {
         if (!isset($_SESSION[self::SESSION_KEY])) return false;
-        
+        //var_dump($_SESSION[self::SESSION_KEY]);
+        //exit;
+        $board = unserialize($_SESSION[self::SESSION_KEY]);//unserialize
         /** @var Card $card */
-        foreach ($_SESSION[self::SESSION_KEY] as $card) {
+        // On itère sur la variable $board désérialisée
+        foreach ($board as $card) { 
             if (!$card->isMatched()) {
                 return false;
             }

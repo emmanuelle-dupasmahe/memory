@@ -35,7 +35,7 @@ class ScoreController extends BaseController
      */
     public function profile(): void // Ne prend plus le paramètre en argument de méthode
     {
-        // 1. Récupérer le nom d'utilisateur depuis l'URL (paramètre GET)
+        // Récupérer le nom d'utilisateur depuis l'URL (paramètre GET)
         $username = $_GET['username'] ?? null;
 
         if (!$username) {
@@ -44,7 +44,7 @@ class ScoreController extends BaseController
             return;
         }
         
-        // 2. Récupérer les données du joueur via le Modèle
+        // Récupérer les données du joueur via le Modèle
         $playerData = $this->scoreModel->getPlayerProfile($username);
 
         if (!$playerData) {
@@ -53,7 +53,7 @@ class ScoreController extends BaseController
             return;
         }
 
-        // 3. Afficher la vue 'score/profile.php'
+        // Afficher la vue 'score/profile.php'
         $this->render('score/profile', [
             'profile' => $playerData
         ]);
