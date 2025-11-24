@@ -1,74 +1,53 @@
 <?php
+
 namespace App\Controllers;
 
 use Core\BaseController;
-use App\Models\UserModel;
+use App\Models\ScoreModel; // On importe votre modèle de score
 
-class AuthController extends BaseController
+class ProfileController extends BaseController
 {
-    private UserModel $userModel;
+    private ScoreModel $scoreModel;
 
     public function __construct()
     {
+        // On initialise le modèle pour interroger la base de données
+        // (Nécessite que Core\Database soit accessible via le ScoreModel)
+        $this->scoreModel = new ScoreModel(); 
+    }
+
+    public function showProfile(): void
+    {
+        // 1. Démarrer la session (BaseController pourrait déjà le faire, mais sécurité)
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // 2. Vérifier l'authentification
+        if (!isset($_SESSION['username'])) {
+            // Rediriger vers la page d'accueil ou de connexion si non connecté
+            header('Location: /login'); 
+            exit;
+        }
+
+        $currentUsername = $_SESSION['username'];
+
+        // 3. Charger les données du profil via le Modèle
+        // Nous utilisons la méthode getPlayerProfile que vous avez fournie dans ScoreModel.php
+        $profile = $this->scoreModel->getPlayerProfile($currentUsername);
         
-        $this->userModel = new UserModel();
-    }
-
-    // Affiche la vue du formulaire
-    public function showRegisterForm(): void
-    {
-        $this->render('auth/register'); // Utilise la même vue
-    }
-
-    public function logout(): void
-    {
-    // Détruit toutes les données de session (ou seulement les variables d'utilisateur)
-    session_unset();
-    session_destroy();
-    
-    // Assurez-vous de relancer la session si votre application en a besoin après
-    session_start();
-    
-    // Redirige vers la page d'accueil ou d'inscription
-    header('Location: /'); 
-    exit;
-    }
-
-    // Traite la soumission du formulaire
-    public function register(): void
-    {
-        if (empty($_POST['username'])) {
-            $this->render('auth/register', ['error' => 'Le nom d\'utilisateur ne peut pas être vide.']);
-            return;
+        // Gérer le cas où le profil n'est pas trouvé (par exemple si l'utilisateur est supprimé de la BDD)
+        if ($profile === false) {
+             $profile = [
+                'username' => $currentUsername,
+                'best_score' => 'N/A',
+                'games_played' => 0,
+                'scores_history' => []
+            ];
         }
 
-        $username = trim($_POST['username']);
-
-        // on vérifie si le nom d'utilisateur existe déjà
-        //if ($this->userModel->findUserByUsername($username)) {
-        //     $this->render('auth/register', ['error' => 'Ce nom d\'utilisateur est déjà pris.']);
-        //     return;
-        // }
-
-        // on créé l'utilisateur
-        try {
-            $userId = $this->userModel->createUser($username);
-            
-            if ($userId) {
-                // Connexion automatique et stockage en session
-                $_SESSION['user_id'] = $userId;
-                $_SESSION['username'] = $username;
-                
-                // Redirection vers le jeu
-                header('Location: /game');
-                exit;
-            } else {
-                $this->render('auth/register', ['error' => 'Erreur lors de l\'enregistrement.']);
-            }
-
-        } catch (\PDOException $e) {
-             // Gérer les erreurs de BDD spécifiques, si besoin
-             $this->render('auth/register', ['error' => 'Erreur de base de données.']);
-        }
+        // 4. Passer la variable $profile à la vue
+        // C'est cette ligne qui rend la variable $profile disponible dans votre fichier profile.php
+        $this->render('profile', ['profile' => $profile]);
     }
 }
