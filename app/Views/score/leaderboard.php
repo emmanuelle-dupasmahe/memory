@@ -1,28 +1,34 @@
-<h2>🏆 Classement des 10 Meilleurs Joueurs</h2>
+<?php 
+/** @var array $topScores */ 
+?>
 
-<table>
-    <thead>
-        <tr>
-            <th>Rang</th>
-            <th>Joueur</th>
-            <th>Meilleur Score (coups)</th>
-            <th>Parties Jouées</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($players as $index => $player): ?>
+<h1>🏆 Classement des 10 meilleurs joueurs 🏆</h1>
+
+<?php if (empty($topScores)): ?>
+    <p>Aucun score enregistré pour l'instant. Soyez le premier à jouer !</p>
+<?php else: ?>
+    
+    <table class="leaderboard-table">
+        <thead>
             <tr>
-                <td><?= $index + 1 ?></td>
-                
-                <td>
-                    <a href="/profile?username=<?= urlencode($player['username']) ?>">
-                        <?= $player['username'] ?>
-                    </a>
-                </td>
-                
-                <td><?= $player['best_score'] ?></td>
-                <td><?= $player['games_played'] ?></td>
+                <th>Classement</th>
+                <th>Joueur</th>
+                <th>Meilleur Score</th>
+                <th>Parties Jouées</th>
             </tr>
-        <?php endforeach; ?>
-    </tbody>
+        </thead>
+        <tbody>
+            <?php $rank = 1; ?>
+            <?php foreach ($topScores as $score): ?>
+                <tr class="<?= $rank === 1 ? 'rank-gold' : '' ?>">
+                    <td><?= $rank++ ?></td>
+                    <td><?= htmlspecialchars($score['username']) ?></td>
+                    <td> <?= $score['best_score'] ?> </td>
+                    <td><?= $score['games_played'] ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    
+<?php endif; ?>
 </table>

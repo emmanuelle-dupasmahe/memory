@@ -3,8 +3,7 @@
 
 namespace App\Models;
 
-use Core\Database; // Utilisation de la classe Database
-use App\Entities\Player; // Pour mettre à jourl'objet Player
+use Core\Database; 
 use PDO;
 
 class ScoreModel
@@ -13,61 +12,24 @@ class ScoreModel
 
     public function __construct()
     {
-        // Utilisation du Singleton pour récupérer l'instance PDO
         $this->pdo = Database::getPdo();
     }
-
-    // Gestion des Utilisateurs (Connexion/Inscription simplifiée) 
-
-    /**
-     * Trouve un utilisateur par son nom d'utilisateur ou le crée s'il n'existe pas.
-     */
-    public function findOrCreateUser(string $username): array|false
-    {
-        // 1. Chercher l'utilisateur existant
-        $stmt = $this->pdo->prepare("SELECT id FROM users WHERE username = :username");
-        $stmt->execute(['username' => $username]);
-        $user = $stmt->fetch();
-
-        if ($user) {
-            return $user; // Utilisateur trouvé
-        }
-
-        // Si non trouvé, créer le nouvel utilisateur 
-        $hashedPassword = password_hash('memory_default', PASSWORD_DEFAULT);
-        $stmt = $this->pdo->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
-        $success = $stmt->execute(['username' => $username, 'password' => $hashedPassword]);
-
-        if ($success) {
-            // Retourner l'ID du nouvel utilisateur
-            return ['id' => $this->pdo->lastInsertId()];
-        }
-
-        return false;
-    }
-
+    
     // Enregistrement des Scores 
-
-    /**
-     * Enregistre le score (nombre de coups) d'une partie terminée.
-     */
     public function saveScore(int $userId, int $turns): bool
     {
+        // Utilisation de la colonne 'coups' et 'date_partie'
         $stmt = $this->pdo->prepare("INSERT INTO scores (user_id, coups, date_partie) VALUES (:user_id, :coups, NOW())");
         return $stmt->execute([
             'user_id' => $userId,
-            'coups' => $turns
+            'coups' => $turns // Le $turns de PHP correspond au 'coups' de la BDD
         ]);
     }
 
-    // Affichage du Classement (Leaderboard) ---
-
-    /**
-     * Récupère le classement des 10 meilleurs joueurs (basé sur le MINIMUM de coups).
-     */
+    // Affichage du Classement (Leaderboard) 
     public function getLeaderboard(int $limit = 10): array
     {
-        // Jointure pour obtenir le username et le meilleur score de chaque joueur
+        // Utilisation des tables 'users' et de la colonne 'coups'
         $query = "
             SELECT 
                 u.username, 
@@ -84,35 +46,40 @@ class ScoreModel
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         
-        return $stmt->fetchAll(); // Retourne un tableau des meilleurs joueurs
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); 
     }
 
     // Affichage du Profil Individuel 
-
-    /**
-     * Récupère les scores détaillés et les statistiques d'un joueur spécifique.
-     */
     public function getPlayerProfile(string $username): array|false
     {
-        // 1. Récupérer l'utilisateur
+        // 1. Récupérer l'utilisateur dans la table 'users'
         $userStmt = $this->pdo->prepare("SELECT id, username FROM users WHERE username = :username");
         $userStmt->execute(['username' => $username]);
-        $user = $userStmt->fetch();
+        $user = $userStmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$user) {
+
             return false;
         }
 
-        // Récupérer tous ses scores, triés par date (du plus récent au plus ancien)
+
+        $userId = $user['id'];
+
+
+
+        // 2. Récupérer tous ses scores, en utilisant 'coups' et 'date_partie'
         $scoresStmt = $this->pdo->prepare("SELECT coups, date_partie FROM scores WHERE user_id = :user_id ORDER BY date_partie DESC");
         $scoresStmt->execute(['user_id' => $user['id']]);
-        $allScores = $scoresStmt->fetchAll();
+        $allScores = $scoresStmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Calculer les statistiques 
+
+        // 3. Calculer les statistiques 
         $bestScore = PHP_INT_MAX;
         $gamesPlayed = count($allScores);
+
         if ($gamesPlayed > 0) {
-            $bestScore = min(array_column($allScores, 'coups'));
+            // Utiliser la colonne 'coups' pour trouver le minimum
+            $bestScore = min(array_column($allScores, 'coups')); 
         }
 
         return [

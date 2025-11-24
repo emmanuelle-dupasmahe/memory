@@ -3,6 +3,8 @@
 $canClick = $canClick ?? true; 
 $isGameOver = $isGameOver ?? false;
 
+$message = $message ?? null;
+
 // Définir la route pour commencer un nouveau jeu
 
 $newGameUrl = '/game/new'; 
@@ -15,6 +17,15 @@ $isLoggedIn = isset($_SESSION['user_id']) && isset($_SESSION['username']);
 $username = $_SESSION['username'] ?? 'Invité'; 
 ?>
 
+<?php if (!empty($message)): ?>
+<div class="game-message">
+    <h2><?= htmlspecialchars($message) ?></h2>
+    
+    <?php if ($isGameOver): ?>
+        <p>🎉 Bravo ! Votre résultat est prêt.</p>
+        <?php endif; ?>
+</div>
+<?php endif; ?>
 <div class="user-info">
     <?php if ($isLoggedIn): ?>
         <p>Bienvenue, <?= htmlspecialchars($username) ?> !</p>

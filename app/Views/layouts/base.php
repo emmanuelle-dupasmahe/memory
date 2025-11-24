@@ -5,6 +5,8 @@
  * Ce fichier définit la structure HTML commune à toutes les pages.
  * Il inclut dynamiquement le contenu spécifique à chaque vue via la variable $content.
  */
+// Définition de l'état de connexion
+$isLoggedIn = isset($_SESSION['user_id']);
 ?>
 <!doctype html>
 <html lang="fr">
@@ -28,28 +30,24 @@
             <li><a href="/" class="nav-link">🏠</a></li> 
             <li><a href="/game" class="nav-link">Jouer 🎮</a></li>
             <li><a href="/leaderboard" class="nav-link">Classement 🏆</a></li>
-            <li><a href="/register" class="nav-link">Inscription </a></li>
-        </ul>
-    </nav>
-</header>
-  
-        
-        <?php 
-        // OPTIONNEL : Lien vers le profil si l'utilisateur est "connecté" (simulé ici par la session)
-        if (isset($_SESSION['username'])): 
-        ?>
-            <li>
-                <a href="/profile?username=<?= urlencode($_SESSION['username'] ?? 'Visiteur') ?>">
-                    Mon Profil
-                </a>
-            </li>
-        <?php endif; ?>
-        
-        </ul>
-  </nav>
 
-  <main>
+            <?php if ($isLoggedIn): ?>
+                <li>
+                    <a href="/profile" class="nav-link profile-link">
+                        <?= htmlspecialchars($_SESSION['username']) ?> 👤
+                    </a>
+                </li>
+                <li><a href="/logout" class="nav-link logout-link">Déconnexion</a></li>
+            <?php else: ?>
+                <li><a href="/register" class="nav-link">Inscription</a></li>
+            <?php endif; ?>
+            
+            </ul> 
+    </nav> 
+</header>
+
+<main>
     <?= $content ?>
-  </main>
+</main>
 </body>
 </html>

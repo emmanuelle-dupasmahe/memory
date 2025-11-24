@@ -67,58 +67,32 @@ class GameController extends BaseController // Adapter l'héritage à votre stru
         exit;
     }
 
-    public function flip(): void
+public function flip(): void
 {
-    // Récupérer l'ID de la carte cliquée (via un formulaire POST)
+    // AJOUTEZ CETTE LIGNE
     $boardId = (int)($_POST['board_id'] ?? null);
     
+    // Assurez-vous que l'ID est valide avant de continuer
     if ($boardId === null) {
-        // Rediriger vers la page d'accueil si l'ID est manquant
+        // Optionnel : Gérer l'erreur si l'ID est manquant
         header('Location: /game');
         exit;
     }
 
-    // Gérer l'état après le clic 
-    $message = null;
     $flippedCount = count($_SESSION['memory_flipped'] ?? []);
     
-    // Si nous avons déjà 2 cartes retournées et qu'une nouvelle carte est cliquée
-    if ($flippedCount === 2) {
-        // On doit d'abord vérifier et réinitialiser l'état précédent.
-        $this->gameModel->checkMatch(); // Met à jour le plateau (match/unflip)
+    // Si nous avons déjà 2 cartes, le joueur n'a pas cliqué sur "Continuer"
+    // On ignore le clic pour forcer le joueur à utiliser le bouton "Continuer".
+    if ($flippedCount >= 2) {
+        header('Location: /game');
+        exit;
     }
-
-    // Maintenant, retourner la nouvelle carte
-    $this->gameModel->flipCard($boardId);
     
-    // Vérifier le nouvel état 
+    // Si on arrive ici, on retourne la carte (premier ou deuxième clic)
+    $this->gameModel->flipCard($boardId); // <-- C'est ici qu'il était utilisé !
     
-    // On vérifie si DEUX cartes sont maintenant retournées après ce clic
-    if (count($_SESSION['memory_flipped'] ?? []) === 2) {
-        
-        // Simuler le délai : Nous allons marquer le fait qu'il y a un match PENDANT une requête
-        // et laisser l'utilisateur voir le résultat. La VUE doit afficher un bouton "Continuer"
-        // qui déclenchera la vérification réelle et la réinitialisation des cartes non trouvées.
-        
-        if ($this->gameModel->isGameOver()) {
-            // **Partie terminée !**
-            $turns = $this->gameModel->getTurns();
-            // TODO: Récupérer l'ID utilisateur (doit être stocké dans la session après connexion)
-            $userId = $_SESSION['user_id'] ?? 1; 
-            $this->scoreModel->saveScore($userId, $turns);
-            $message = "Partie terminée ! Vous avez gagné en $turns tours.";
-            // La vue affichera le message et le lien vers le classement.
-        }
-        
-        // Si c'est la 2ème carte cliquée, nous ne faisons RIEN d'autre dans cette requête.
-        // On laisse la page se recharger pour montrer les deux cartes au joueur.
-        
-        // C'est à la vue d'afficher les deux cartes et potentiellement un bouton "Continuer".
-
-    }
-
-    // Afficher la page de jeu mise à jour
-    $this->renderGameView($message);
+    // Après le flip, on affiche la vue mise à jour (qui va potentiellement montrer le bouton "Continuer")
+    $this->renderGameView();
 }
 
 private function renderGameView(?string $message = null): void 
@@ -138,16 +112,33 @@ private function renderGameView(?string $message = null): void
 }
     public function checkAndReset(): void 
 {
-    // Vérifie si les cartes correspondent (dans le modèle)
+    $message = null; // Initialisation pour la vue
+
+    // 1. Finaliser le tour (vérifie le match, incrémente les tours, masque les cartes si nécessaire)
     $isMatch = $this->gameModel->checkMatch(); 
     
     if (!$isMatch) {
-        // Si ce n'est pas un match, le modèle va les masquer (unflip)
         $this->gameModel->unflipAll(); 
     }
-    // Redirige pour afficher le plateau mis à jour
-    header('Location: /game');
-    exit;
+    
+    // 2. Vérification de Fin de Partie et Sauvegarde (AJOUT NÉCESSAIRE)
+    if ($this->gameModel->isGameOver()) {
+        $turns = $this->gameModel->getTurns();
+        
+        if (isset($_SESSION['user_id'])) {
+            $userId = $_SESSION['user_id'];
+            // C'est ici que l'enregistrement se fait !
+            $this->scoreModel->saveScore($userId, $turns); 
+            $message = "Partie terminée ! Score enregistré en $turns coups !";
+            // OPTIONNEL : $this->gameModel->clearBoard(); 
+        } else {
+            $message = "Partie terminée ! Vous avez gagné en $turns coups. Inscrivez-vous pour enregistrer.";
+        }
+    }
+    
+    // 3. Afficher la page de jeu mise à jour avec le message
+    $this->renderGameView($message);
+
 }
 }
 

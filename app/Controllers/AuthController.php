@@ -20,6 +20,20 @@ class AuthController extends BaseController
         $this->render('auth/register'); // Utilise la même vue
     }
 
+    public function logout(): void
+    {
+    // Détruit toutes les données de session (ou seulement les variables d'utilisateur)
+    session_unset();
+    session_destroy();
+    
+    // Assurez-vous de relancer la session si votre application en a besoin après
+    session_start();
+    
+    // Redirige vers la page d'accueil ou d'inscription
+    header('Location: /'); 
+    exit;
+    }
+
     // Traite la soumission du formulaire
     public function register(): void
     {
@@ -31,10 +45,10 @@ class AuthController extends BaseController
         $username = trim($_POST['username']);
 
         // on vérifie si le nom d'utilisateur existe déjà
-        if ($this->userModel->findUserByUsername($username)) {
-            $this->render('auth/register', ['error' => 'Ce nom d\'utilisateur est déjà pris.']);
-            return;
-        }
+        //if ($this->userModel->findUserByUsername($username)) {
+        //     $this->render('auth/register', ['error' => 'Ce nom d\'utilisateur est déjà pris.']);
+        //     return;
+        // }
 
         // on créé l'utilisateur
         try {
