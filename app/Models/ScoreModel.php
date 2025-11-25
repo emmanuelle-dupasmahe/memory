@@ -53,7 +53,9 @@ class ScoreModel
     public function getPlayerProfile(string $username): array|false
     {
         // 1. Récupérer l'utilisateur dans la table 'users'
-        $userStmt = $this->pdo->prepare("SELECT id, username FROM users WHERE username = :username");
+        $userStmt = $this->pdo->prepare("SELECT u.id, u.username, s.coups, s.date_partie FROM users as u 
+        JOIN scores s ON u.id = s.user_id 
+        WHERE u.username = :username");
         $userStmt->execute(['username' => $username]);
         $user = $userStmt->fetch(PDO::FETCH_ASSOC);
 

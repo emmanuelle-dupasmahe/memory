@@ -8,19 +8,23 @@ use Core\Database;
 use PDO;
 
 class GameModel {
-    private PDO $pdo; // Connexion BDD pour récupérer les types de cartes
+    private PDO $pdo; 
     
-    // Clé de session où stocker le plateau de jeu
+    // Clés de session
     private const SESSION_KEY = 'memory_board'; 
     private const TURNS_KEY = 'memory_turns';
-    private const FLIPPED_KEY = 'memory_flipped'; // ID des cartes actuellement retournées (max 2)
+    private const FLIPPED_KEY = 'memory_flipped'; 
+    private const PAIRS_COUNT_KEY = 'memory_pairs_count'; // Nouvelle clé pour stocker le nombre de paires
 
     public function __construct() {
-        // Assurez-vous que la session est démarrée avant l'instanciation du modèle
-        //if (session_status() == PHP_SESSION_NONE) {
-        //    session_start();
-        //}
         $this->pdo = Database::getPdo();
+    }
+
+    // Ajouté pour récupérer le nombre de paires actuel
+    public function getPairsCount(): int
+    {
+        // Retourne le nombre de paires de la partie en cours, 6 par défaut
+        return $_SESSION[self::PAIRS_COUNT_KEY] ?? 6;
     }
 
     /**
@@ -32,67 +36,71 @@ class GameModel {
     }
     
     /**
-     * Initialise ou réinitialise un nouveau plateau de jeu de 12 cartes (6 paires).
+     * Initialise ou réinitialise un nouveau plateau de jeu de cartes.
+     * @param int $numPairs Le nombre de paires à utiliser (entre 3 et 12).
      */
-    public function initializeBoard(): void {
-     
-        $cardTypes = $this->getCardTypesFromDatabase(); // 6 types de cartes
+    public function initializeBoard(int $numPairs = 6): void {
+
+        // 1. Définir le nombre de paires, avec limites de sécurité
+        $numPairs = max(3, min(12, $numPairs)); 
+
+        $allCardTypes = $this->getCardTypesFromDatabase();
         
-        // Créer les paires 
-        $boardData = array_merge($cardTypes, $cardTypes);
-        
-        // Mélanger les cartes
+        // 2. Sélectionner aléatoirement le nombre de types de cartes requis
+        shuffle($allCardTypes);
+        $selectedCardTypes = array_slice($allCardTypes, 0, $numPairs);
+
+        // 3. Créer les paires 
+        $boardData = array_merge($selectedCardTypes, $selectedCardTypes);
+
+        // 4. Mélanger les cartes
         shuffle($boardData);
 
-        //  Hydrater la liste d'objets Card et les stocker en session
+        // 5. Hydrater la liste d'objets Card et les stocker en session
         $board = [];
         foreach ($boardData as $index => $data) {
             $board[$index] = new Card(
-                $index,              // boardId (position sur le plateau)
-                $data['id'],         // typeId (ID du personnage pour la paire)
+                $index, // boardId
+                $data['id'], // typeId
                 $data['nom'],
                 $data['image_recto']
-            );
+            ); 
         }
-   
-        // Réinitialiser les variables de session
+    
+        // 6. Réinitialiser les variables de session et stocker le nombre de paires (maintenant dans la fonction)
         $_SESSION[self::SESSION_KEY] = serialize($board);
         $_SESSION[self::TURNS_KEY] = 0;
         $_SESSION[self::FLIPPED_KEY] = [];
-    }
-    
+        $_SESSION[self::PAIRS_COUNT_KEY] = $numPairs; // Enregistre le choix
+    } 
+
     /**
      * Retourne le plateau de jeu (liste d'objets Card) depuis la session.
      */
     public function getBoard(): array {
 
-    if (!isset($_SESSION[self::SESSION_KEY])) {
-        $this->initializeBoard();
-    }
-    
-    $board = unserialize($_SESSION[self::SESSION_KEY]); 
-
-    // Vérifie si la désérialisation a échoué (false) ou si ce n'est pas un tableau.
-    if ($board === false || !is_array($board)) {
-        // Logique de récupération forcée : On réinitialise le plateau
-        error_log("Avertissement: Données de session du plateau corrompues. Réinitialisation.");
-        $this->initializeBoard();
-        
-        // On récupère le nouveau plateau initialisé (ce qui devrait marcher)
-        $board = unserialize($_SESSION[self::SESSION_KEY]);
-        
-        // Au cas où la réinitialisation elle-même échouerait (cas très rare)
-        if ($board === false || !is_array($board)) {
-            // Retourne un tableau vide pour éviter un crash fatal à la vue
-            return [];
+        // Si le plateau n'existe pas, on initialise avec la valeur par défaut de 6 paires
+        if (!isset($_SESSION[self::SESSION_KEY])) {
+            $this->initializeBoard();
         }
-    }
-    
-    return $board; 
-}
-    /**
-     * Récupère le nombre de tours joués.
-     */
+        
+        $board = unserialize($_SESSION[self::SESSION_KEY]); 
+
+        // Vérifie si la désérialisation a échoué 
+        if ($board === false || !is_array($board)) {
+            error_log("Avertissement: Données de session du plateau corrompues. Réinitialisation.");
+            $this->initializeBoard();
+
+            // On récupère le nouveau plateau initialisé
+            $board = unserialize($_SESSION[self::SESSION_KEY]);
+            if ($board === false || !is_array($board)) {
+                return [];
+            }
+        }
+
+        return $board; 
+    } 
+
     public function getTurns(): int {
         return $_SESSION[self::TURNS_KEY] ?? 0;
     }
@@ -158,7 +166,6 @@ class GameModel {
         } else {
             // Si ce n'est pas une paire, elles ne sont pas retournées immédiatement
             // car l'utilisateur doit voir les deux cartes un instant.
-            // Le Contrôleur devra appeler unflipAll après un court délai côté client.
         }
 
         $_SESSION[self::SESSION_KEY] = serialize($board);//serialize
