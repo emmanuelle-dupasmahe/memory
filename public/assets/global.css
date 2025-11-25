@@ -4,8 +4,15 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0; /* Important : supprime la marge par défaut du navigateur */
+    min-height: 100vh;
     background-color: #cbf0e3; /* Fond léger */
     color: #163aec;
+    /* --- Ajout du fond Snoopy --- */
+    background-image: url('images/snoopy_content.png'); 
+    background-repeat: repeat; /* La propriété clé pour la répétition */
+    
+   /*reduction de snoopy*/
+    background-size: 100px; 
 }
 
 a {
@@ -20,7 +27,7 @@ a:hover {
 
 /* --- EN-TÊTE PRINCIPAL (HEADER) --- */
 .main-header {
-    background-color: #a0c9e7; /* Fond blanc propre */
+    background-color: #a0c9e7; 
     padding: 15px 30px;
     border-bottom: 3px solid #0d28ad; 
     display: flex; /* Active Flexbox */
