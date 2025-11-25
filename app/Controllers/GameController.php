@@ -3,69 +3,90 @@
 
 namespace App\Controllers;
 
+use Core\BaseController;
 use App\Models\GameModel;
-use App\Models\ScoreModel; // Nécessaire pour l'enregistrement du score en fin de partie
-use Core\BaseController; 
+use App\Models\ScoreModel; // Nécessaire pour sauvegarder le score
 
-class GameController extends BaseController // Adapter l'héritage à votre structure
+class GameController extends BaseController
 {
     private GameModel $gameModel;
     private ScoreModel $scoreModel;
 
     public function __construct()
     {
-        // Assurez-vous d'inclure les fichiers et de démarrer la session si nécessaire
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
         $this->gameModel = new GameModel();
-        $this->scoreModel = new ScoreModel();
+        $this->scoreModel = new ScoreModel(); // Assurez-vous d'avoir ce modèle
     }
 
     /**
-     * Affiche la grille de jeu actuelle.
+     * Affiche la page de sélection du nombre de paires.
+     * C'est la nouvelle page d'accueil du jeu.
      */
     public function index(): void
     {
-        
-//session_destroy();
-        if (empty($_SESSION['memory_board'])) {
-               
-             // Redirige vers la nouvelle partie si la session est vide
-             $this->gameModel->initializeBoard();
-             // Optionnel : Rediriger après initialisation pour charger la page 'propre'
-             // header('Location: /game');
-             // exit;
-        }
-        // Récupérer l'état du plateau. Initialise si c'est la première visite.
-        $board = $this->gameModel->getBoard();
-    
-        $turns = $this->gameModel->getTurns();
-
-    //    DEBUG CODE
-    //     echo "<pre>";
-    //     var_dump($board);
-    //     echo "</pre>";
-    //     exit;
-
-        // Convertir les objets Card en tableaux pour la vue, si nécessaire
-        $boardData = array_map(fn($card) => $card->toArray(), $board);
-
-        // Charger la vue 
-        $this->render('game/index', [
-            'board' => $boardData,
-            'turns' => $turns,
-            'isGameOver' => $this->gameModel->isGameOver()
-        ]);
+        $this->render('game/options', ['title' => 'Démarrer la Partie']);
     }
 
     /**
-     * Démarre une nouvelle partie.
+     * Gère la sélection du nombre de paires et démarre une nouvelle partie.
      */
-    public function newGame(): void
+    public function start(): void
     {
-        $this->gameModel->initializeBoard();
-        // Redirige vers la page de jeu
-        header('Location: /game'); 
+        // Récupérer le nombre de paires depuis le POST ou utiliser 6 par défaut
+        $numPairs = isset($_POST['pairs']) ? (int)$_POST['pairs'] : 6;
+        
+        // Assurer que la valeur est dans les bornes autorisées
+        $numPairs = max(3, min(12, $numPairs));
+        
+        // Initialiser le plateau avec le choix de l'utilisateur
+        $this->gameModel->initializeBoard($numPairs);
+
+        // Rediriger vers la page de jeu réelle (play)
+        header('Location: /game/play');
         exit;
     }
+
+    /**
+     * Affiche le plateau de jeu et gère l'état de la partie.
+     * C'est l'ancienne méthode 'game' renommée 'play'.
+     */
+    public function play(): void
+    {
+        // 1. Initialisation si nécessaire (ici, elle est faite par le modèle si la session est vide)
+        $board = $this->gameModel->getBoard();
+        $turns = $this->gameModel->getTurns();
+        
+        // Vérification de la fin de partie (peut se produire après un 'flip' réussi)
+        if ($this->gameModel->isGameOver()) {
+            
+            // On vérifie si l'utilisateur est connecté pour enregistrer le score
+            $username = $_SESSION['username'] ?? null;
+            if ($username) {
+                // Enregistrement du score si la partie est terminée
+                $this->scoreModel->saveScore($username, $turns); 
+            }
+            
+            // On propose de rejouer
+            $this->render('game/game_over', [
+                'turns' => $turns,
+                'title' => 'Partie Terminée !',
+                'pairs_count' => $this->gameModel->getPairsCount()
+            ]);
+            return;
+        }
+
+        // Rendre la vue du jeu
+        $this->render('game/play', [
+            'board' => $board,
+            'turns' => $turns,
+            'title' => 'Jeu de Mémoire',
+            'pairs_count' => $this->gameModel->getPairsCount() // Afficher la difficulté
+        ]);
+    }
+
 
 public function flip(): void
 {
