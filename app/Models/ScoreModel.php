@@ -15,10 +15,25 @@ class ScoreModel
         $this->pdo = Database::getPdo();
     }
     
-    // Enregistrement des Scores 
-    public function saveScore(int $userId, int $turns): bool
+    /**
+     * Enregistre le score en utilisant le nom d'utilisateur et récupère l'ID numérique.
+     * Le paramètre $boardSize est ignoré ici car non présent dans la table scores.
+     */
+    public function saveScore(string $username, int $turns, int $boardSize = 0): bool
     {
-        // Utilisation de la colonne 'coups' et 'date_partie'
+        // 1. Récupérer l'ID numérique (u.id) à partir du nom d'utilisateur
+        $userStmt = $this->pdo->prepare("SELECT id FROM users WHERE username = :username");
+        $userStmt->execute(['username' => $username]);
+        $userId = $userStmt->fetchColumn();
+
+        if (!$userId) {
+            // Si l'utilisateur n'est pas trouvé dans la table 'users', on n'enregistre pas le score.
+            error_log("Tentative d'enregistrement de score pour un utilisateur inconnu: $username");
+            return false;
+        }
+
+        // 2. Enregistrement du score dans la table 'scores'
+        // Nous enregistrons l'ID numérique trouvé ($userId)
         $stmt = $this->pdo->prepare("INSERT INTO scores (user_id, coups, date_partie) VALUES (:user_id, :coups, NOW())");
         return $stmt->execute([
             'user_id' => $userId,
@@ -53,21 +68,14 @@ class ScoreModel
     public function getPlayerProfile(string $username): array|false
     {
         // 1. Récupérer l'utilisateur dans la table 'users'
-        $userStmt = $this->pdo->prepare("SELECT u.id, u.username, s.coups, s.date_partie FROM users as u 
-        JOIN scores s ON u.id = s.user_id 
-        WHERE u.username = :username");
+        // Nous allons optimiser cette requête pour récupérer uniquement les informations de l'utilisateur
+        $userStmt = $this->pdo->prepare("SELECT id, username FROM users WHERE username = :username");
         $userStmt->execute(['username' => $username]);
         $user = $userStmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$user) {
-
             return false;
         }
-
-
-        $userId = $user['id'];
-
-
 
         // 2. Récupérer tous ses scores, en utilisant 'coups' et 'date_partie'
         $scoresStmt = $this->pdo->prepare("SELECT coups, date_partie FROM scores WHERE user_id = :user_id ORDER BY date_partie DESC");

@@ -17,14 +17,6 @@ use Core\Router;
 // Initialisation du routeur
 $router = new Router();
 
-// Définition des routes de l'application
-// La route "/" pointe vers la méthode "index" du contrôleur HomeController
-//$router->get('/', 'App\\Controllers\\HomeController@index');
-
-//$router->get('/about', 'App\\Controllers\\HomeController@about');
-
-// La route "/articles" pointe vers la méthode "index" du contrôleur ArticleController
-//$router->get('/articles', 'App\\Controllers\\ArticleController@index');
 
 
 
@@ -34,7 +26,7 @@ $router->get('/game', 'App\\Controllers\\GameController@index');
 //$router->get('/game/new', 'App\\Controllers\\GameController@newGame');//ajout pour tester
 
 // Actions de jeu (POST : pour les formulaires)
-$router->post('/game/new', 'App\\Controllers\\GameController@newGame');
+//$router->post('/game/new', 'App\\Controllers\\GameController@newGame');
 $router->post('/game/flip', 'App\\Controllers\\GameController@flip');
 $router->post('/game/checkAndReset', 'App\\Controllers\\GameController@checkAndReset');
 
@@ -46,12 +38,16 @@ $router->get('/leaderboard', 'App\\Controllers\\ScoreController@leaderboard');
 // Profil individuel (utilisation du paramètre GET pour le nom d'utilisateur)
 $router->get('/profile', 'App\\Controllers\\ScoreController@profile');
 
+$router->get('/game', 'App\\Controllers\\GameController@index');
 
 // --- Routes d'Authentification (Inscription) ---
 // Afficher le formulaire simplifié (méthode GET)
 $router->get('/register', 'App\\Controllers\\AuthController@showRegisterForm');
 // Traiter les données (méthode POST)
 $router->post('/register', 'App\\Controllers\\AuthController@register');
+
+$router->get('/game/index', 'App\\Controllers\\GameController@play');
+$router->post('/game/start', 'App\\Controllers\\GameController@start');
 
 // deconnexion
 $router->get('/logout', 'App\\Controllers\\AuthController@logout');

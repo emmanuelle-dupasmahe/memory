@@ -5,7 +5,8 @@ namespace App\Controllers;
 
 use Core\BaseController;
 use App\Models\GameModel;
-use App\Models\ScoreModel; // Nécessaire pour sauvegarder le score
+use App\Models\ScoreModel; 
+use App\Entities\Card; // Assurez-vous d'importer l'entité Card
 
 class GameController extends BaseController
 {
@@ -18,12 +19,13 @@ class GameController extends BaseController
             session_start();
         }
         $this->gameModel = new GameModel();
-        $this->scoreModel = new ScoreModel(); // Assurez-vous d'avoir ce modèle
+        // Assurez-vous que le ScoreModel existe !
+        $this->scoreModel = new ScoreModel(); 
     }
 
     /**
      * Affiche la page de sélection du nombre de paires.
-     * C'est la nouvelle page d'accueil du jeu.
+     * Route: GET /game
      */
     public function index(): void
     {
@@ -32,135 +34,129 @@ class GameController extends BaseController
 
     /**
      * Gère la sélection du nombre de paires et démarre une nouvelle partie.
+     * Route: POST /game/start
      */
     public function start(): void
     {
-        // Récupérer le nombre de paires depuis le POST ou utiliser 6 par défaut
+        // CORRECTION DU PROBLÈME 1 : Changement de 'num_pairs' à 'pairs' pour correspondre à game/options.php
         $numPairs = isset($_POST['pairs']) ? (int)$_POST['pairs'] : 6;
         
-        // Assurer que la valeur est dans les bornes autorisées
         $numPairs = max(3, min(12, $numPairs));
         
-        // Initialiser le plateau avec le choix de l'utilisateur
         $this->gameModel->initializeBoard($numPairs);
 
-        // Rediriger vers la page de jeu réelle (play)
-        header('Location: /game/play');
+        // Rediriger vers la page de jeu réelle (/game/index)
+        header('Location: /game/index');
         exit;
     }
 
     /**
      * Affiche le plateau de jeu et gère l'état de la partie.
-     * C'est l'ancienne méthode 'game' renommée 'play'.
+     * Route: GET /game/index
      */
     public function play(): void
     {
-        // 1. Initialisation si nécessaire (ici, elle est faite par le modèle si la session est vide)
+        // 1. Initialisation et récupération des données du jeu
+        if (!isset($_SESSION['memory_board'])) {
+            header('Location: /game');
+            exit;
+        }
+
         $board = $this->gameModel->getBoard();
         $turns = $this->gameModel->getTurns();
         
-        // Vérification de la fin de partie (peut se produire après un 'flip' réussi)
+        // Récupération et suppression du message flash
+        $message = $_SESSION['game_message'] ?? null;
+        unset($_SESSION['game_message']);
+        
+        // 2. Préparation du tableau de données pour la vue (UTILISATION DE LA MÉTHODE toArray())
+        $boardData = [];
+        /** @var Card $card */
+        foreach ($board as $card) {
+            // Conversion de l'objet Card en tableau associatif
+            $boardData[] = $card->toArray();
+        }
+
+        // 3. Logique de Fin de Partie
         if ($this->gameModel->isGameOver()) {
             
-            // On vérifie si l'utilisateur est connecté pour enregistrer le score
-            $username = $_SESSION['username'] ?? null;
-            if ($username) {
-                // Enregistrement du score si la partie est terminée
-                $this->scoreModel->saveScore($username, $turns); 
+            // CORRECTION DU PROBLÈME 2 : Utilisation de l'identifiant String (Nom d'utilisateur ou ID)
+            $scoreIdentifier = $_SESSION['username'] ?? $_SESSION['user_id'] ?? 'Anonyme';
+            
+            if ($scoreIdentifier !== 'Anonyme') {
+                // ATTENTION: saveScore DOIT accepter une string (le nom d'utilisateur) ou string|int.
+                // Sinon, l'erreur TypeError réapparaîtra si ScoreModel.php n'est pas corrigé.
+                $this->scoreModel->saveScore($scoreIdentifier, $turns, $this->gameModel->getPairsCount()); 
             }
             
-            // On propose de rejouer
-            $this->render('game/game_over', [
+            $this->render('game/game_over', [ 
                 'turns' => $turns,
                 'title' => 'Partie Terminée !',
-                'pairs_count' => $this->gameModel->getPairsCount()
+                'pairs_count' => $this->gameModel->getPairsCount(),
+                'message' => "Félicitations ! Vous avez gagné en $turns coups !"
             ]);
+            // Destruction de la session de jeu après la fin pour forcer un nouveau départ
+            unset($_SESSION['memory_board']);
+            unset($_SESSION['memory_flipped']);
+            unset($_SESSION['memory_matched']);
+            unset($_SESSION['memory_turns']);
             return;
         }
 
-        // Rendre la vue du jeu
-        $this->render('game/play', [
-            'board' => $board,
+        // 4. Rendre la vue du jeu
+        $this->render('game/index', [
+            'board' => $boardData, // ENVOI DES TABLEAUX ASSOCIATIFS CORRECTS
             'turns' => $turns,
             'title' => 'Jeu de Mémoire',
-            'pairs_count' => $this->gameModel->getPairsCount() // Afficher la difficulté
+            'pairs_count' => $this->gameModel->getPairsCount(),
+            'message' => $message,
+            'canClick' => count($_SESSION['memory_flipped'] ?? []) < 2
         ]);
     }
 
 
-public function flip(): void
-{
-    // AJOUTEZ CETTE LIGNE
-    $boardId = (int)($_POST['board_id'] ?? null);
-    
-    // Assurez-vous que l'ID est valide avant de continuer
-    if ($boardId === null) {
-        // Optionnel : Gérer l'erreur si l'ID est manquant
-        header('Location: /game');
-        exit;
-    }
-
-    $flippedCount = count($_SESSION['memory_flipped'] ?? []);
-    
-    // Si nous avons déjà 2 cartes, le joueur n'a pas cliqué sur "Continuer"
-    // On ignore le clic pour forcer le joueur à utiliser le bouton "Continuer".
-    if ($flippedCount >= 2) {
-        header('Location: /game');
-        exit;
-    }
-    
-    // Si on arrive ici, on retourne la carte (premier ou deuxième clic)
-    $this->gameModel->flipCard($boardId); // <-- C'est ici qu'il était utilisé !
-    
-    // Après le flip, on affiche la vue mise à jour (qui va potentiellement montrer le bouton "Continuer")
-    $this->renderGameView();
-}
-
-private function renderGameView(?string $message = null): void 
-{
-    $board = $this->gameModel->getBoard();
-    $boardData = array_map(fn($card) => $card->toArray(), $board);
-    $turns = $this->gameModel->getTurns();
-
-    $this->render('game/index', [
-        'board' => $boardData,
-        'turns' => $turns,
-        'isGameOver' => $this->gameModel->isGameOver(),
-        'message' => $message,
-        // Si 2 cartes sont retournées, on bloque les autres clics.
-        'canClick' => count($_SESSION['memory_flipped'] ?? []) < 2
-    ]);
-}
-    public function checkAndReset(): void 
-{
-    $message = null; // Initialisation pour la vue
-
-    // 1. Finaliser le tour (vérifie le match, incrémente les tours, masque les cartes si nécessaire)
-    $isMatch = $this->gameModel->checkMatch(); 
-    
-    if (!$isMatch) {
-        $this->gameModel->unflipAll(); 
-    }
-    
-    // 2. Vérification de Fin de Partie et Sauvegarde (AJOUT NÉCESSAIRE)
-    if ($this->gameModel->isGameOver()) {
-        $turns = $this->gameModel->getTurns();
+    /**
+     * Gère le retournement d'une carte.
+     * Route: POST /game/flip
+     */
+    public function flip(): void
+    {
+        $boardId = (int)($_POST['board_id'] ?? null);
         
-        if (isset($_SESSION['user_id'])) {
-            $userId = $_SESSION['user_id'];
-            // C'est ici que l'enregistrement se fait !
-            $this->scoreModel->saveScore($userId, $turns); 
-            $message = "Partie terminée ! Score enregistré en $turns coups !";
-            // OPTIONNEL : $this->gameModel->clearBoard(); 
-        } else {
-            $message = "Partie terminée ! Vous avez gagné en $turns coups. Inscrivez-vous pour enregistrer.";
+        if ($boardId === null) {
+            header('Location: /game/index');
+            exit;
         }
+
+        $flippedCount = count($_SESSION['memory_flipped'] ?? []);
+        
+        if ($flippedCount >= 2) {
+            header('Location: /game/index');
+            exit;
+        }
+        
+        $this->gameModel->flipCard($boardId); 
+        
+        header('Location: /game/index');
+        exit;
     }
-    
-    // 3. Afficher la page de jeu mise à jour avec le message
-    $this->renderGameView($message);
 
+    /**
+     * Vérifie si les deux cartes retournées forment une paire et réinitialise l'état.
+     * Route: POST /game/check
+     */
+    public function checkAndReset(): void 
+    {
+        $isMatch = $this->gameModel->checkMatch(); 
+        
+        if (!$isMatch) {
+            $this->gameModel->unflipAll(); 
+            $_SESSION['game_message'] = "Dommage ! Pas de paire trouvée.";
+        } else {
+            $_SESSION['game_message'] = "Bravo ! Paire trouvée !";
+        }
+        
+        header('Location: /game/index');
+        exit;
+    }
 }
-}
-
-

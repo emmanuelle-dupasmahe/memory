@@ -7,7 +7,7 @@ $message = $message ?? null;
 
 // Définir la route pour commencer un nouveau jeu
 
-$newGameUrl = '/game/new'; 
+$newGameUrl = '/game'; 
 
 ?>
 
@@ -53,12 +53,10 @@ $username = $_SESSION['username'] ?? 'Invité';
 
     <?php 
     // Bouton "Nouveau Jeu"
-    // On l'affiche toujours (sauf peut-être pendant l'état de vérification si vous voulez le bloquer)
     ?>
     <div class="action-block-new">
-        <form method="POST" action="<?= $newGameUrl ?>" style="display: inline;">
-            <button type="submit" class="button new-game-button">Nouveau Jeu</button>
-        </form>
+        <!-- CORRECTION: Utilisation d'un lien (GET) vers /game pour la sémantique -->
+        <a href="<?= $newGameUrl ?>" class="button new-game-button link-button">Nouveau Jeu</a>
     </div>
 </div>
 
