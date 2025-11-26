@@ -6,7 +6,7 @@ body {
     margin: 0; /* Important : supprime la marge par défaut du navigateur */
     min-height: 100vh;
     background-color: #cbf0e3; /* Fond léger */
-    color: #163aec;
+    color: #076117;
     /* --- Ajout du fond Snoopy --- */
     background-image: url('images/snoopy_content.png'); 
     background-repeat: repeat; /* La propriété clé pour la répétition */
@@ -17,7 +17,7 @@ body {
 
 a {
     text-decoration: none; 
-    color: #163aec;
+    color: #e7840a;
     transition: color 0.3s;
 }
 
@@ -188,8 +188,14 @@ a:hover {
     /*border-bottom: 1px solid #ccc;*/
 }
 
+.user-info {
+    color:rgb(6, 71, 33);
+    font-size:1.5em;
+    font-weight: bold;
+}
 .action-block-continue p {
     /* Ajuster la marge pour que le texte soit bien aligné avec le bouton Continuer */
+    color:rgb(6, 71, 33);
     margin-right: 15px;
     display: inline-block;
     font-weight: bold;
@@ -232,4 +238,216 @@ a:hover {
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     z-index: 1000; /* Assure qu'il est au-dessus du reste du contenu */
+}
+
+
+/* Styles spécifiques pour la page de fin de jeu */
+.game-over-container {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 30px;
+    background: linear-gradient(135deg, #f0f9ff 0%, #cbe8ff 100%);
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(13, 97, 175, 0.2);
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #004d99;
+    font-size: 2.2em;
+    margin-bottom: 25px;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.message-box {
+    padding: 20px;
+    border: 3px solid #007bff;
+    border-radius: 10px;
+    background-color: #e6f7ff;
+    margin-bottom: 30px;
+}
+
+.congratulations {
+    font-size: 1.4em;
+    color: #28a745;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.stats {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    display: inline-block;
+}
+
+.stats p {
+    margin: 5px 0;
+    font-size: 1.1em;
+}
+
+.score {
+    color: #dc3545; 
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.score-info {
+    margin-top: 20px;
+    color: #555;
+    font-style: italic;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.button-action {
+    display: inline-block;
+    padding: 12px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.new-game {
+    background-color: #075aff; 
+    color: #f8e40e;
+    border: none;
+}
+
+.new-game:hover {
+    background-color:#f8e40e;
+    color:#075aff;
+    transform: translateY(-2px);
+}
+
+.leaderboard {
+    background-color: #6f42c1; /* Violet */
+    color: white;
+    border: none;
+}
+
+.leaderboard:hover {
+    background-color: #5b37a1;
+    transform: translateY(-2px);
+}
+
+/*style pour la page options */
+
+.options-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(19, 16, 177, 0.1);
+    text-align: center;
+}
+.pairs-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+.label-pairs {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+}
+.input-pairs {
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    width: 100px;
+    text-align: center;
+    font-size: 1.2em;
+}
+.button-start {
+    padding: 12px 25px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+}
+.button-start:hover {
+    background-color: #45a049;
+}
+.info-text {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+/*style pour profile.php*/
+.content-box {
+    /* Fond blanc pour faire ressortir le contenu */
+    background-color: #ffffff; 
+    /* Bordure légèrement visible */
+    border: 1px solid #ccc; 
+    
+    border-radius: 20px; 
+    
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    /* Marge intérieure pour que le contenu ne touche pas les bords */
+    padding: 30px; 
+    /* Centrer le conteneur et limiter sa largeur */
+    max-width: 800px; 
+    margin: 20px auto; 
+}
+
+/*style pour leaderboard.php*/
+.history-table, .leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    text-align: left;
+}
+
+.history-table th, .leaderboard-table th {
+    background-color: #f2f2f2;
+    padding: 12px;
+    border-bottom: 2px solid #ddd;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+.history-table td, .leaderboard-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Effet au survol des lignes */
+.history-table tbody tr:hover, .leaderboard-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Style spécifique pour la première place (or) */
+.leaderboard-table tr.rank-gold {
+    background-color: #fffacd; /* Jaune très clair */
+    font-weight: bold;
+}
+
+.leaderboard-table tr.rank-gold td {
+    border-bottom: 2px solid #ffd700; /* Bordure or */
+}
+
+/* Style de la ligne de séparation (hr) */
+hr {
+    border: 0;
+    height: 1px;
+    background: #ccc;
+    margin: 25px 0;
 }

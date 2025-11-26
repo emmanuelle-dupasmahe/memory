@@ -2,8 +2,8 @@
 /** @var array $topScores */ 
 ?>
 
+<div class="content-box leaderboard-page">
 <h1>🏆 Classement des 10 meilleurs joueurs 🏆</h1>
-
 <?php if (empty($topScores)): ?>
     <p>Aucun score enregistré pour l'instant. Soyez le premier à jouer !</p>
 <?php else: ?>
@@ -31,4 +31,4 @@
     </table>
     
 <?php endif; ?>
-</table>
+</div>

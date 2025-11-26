@@ -11,6 +11,8 @@ $gamesPlayed = $profile['games_played'] ?? 0;
 $history = $profile['scores_history'] ?? [];
 ?>
 
+
+<div class="content-box profile-page">
 <h1>Profil de <?= htmlspecialchars($username) ?></h1>
 
 <?php if ($gamesPlayed > 0): ?>
@@ -58,3 +60,4 @@ $history = $profile['scores_history'] ?? [];
 <?php else: ?>
     <p>Bienvenue, <?= htmlspecialchars($username) ?> ! Vous n'avez pas encore terminé de partie. Commencez une partie pour enregistrer votre score et débloquer vos statistiques !</p>
 <?php endif; ?>
+</div>

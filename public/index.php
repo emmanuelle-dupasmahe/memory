@@ -48,6 +48,7 @@ $router->post('/register', 'App\\Controllers\\AuthController@register');
 
 $router->get('/game/index', 'App\\Controllers\\GameController@play');
 $router->post('/game/start', 'App\\Controllers\\GameController@start');
+$router->post('/game/game_over', 'App\\Controllers\\GameController@start');
 
 // deconnexion
 $router->get('/logout', 'App\\Controllers\\AuthController@logout');
