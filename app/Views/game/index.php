@@ -17,22 +17,23 @@ $isLoggedIn = isset($_SESSION['user_id']) && isset($_SESSION['username']);
 $username = $_SESSION['username'] ?? 'Invité'; 
 ?>
 
-<?php if (!empty($message)): ?>
-
-
-    <?php 
-        // Déterminer la classe : 'success' si "Bravo !", 'error' sinon
-        $messageClass = (strpos($message, 'Bravo') !== false) ? 'success-message' : 'error-message';
-    ?>
-
-<div class="game-message <?= $messageClass ?>"> 
-    <h2><?= htmlspecialchars($message) ?></h2>
+<?php 
+    // Déterminer la classe : 'success-message' ou 'error-message'
+    $messageClass = (!empty($message) && strpos($message, 'Bravo') !== false) ? 'success-message' : 'error-message';
     
-    <?php if ($isGameOver): ?>
-        <p>🎉 Bravo ! Votre résultat est prêt.</p>
-        <?php endif; ?>
-</div>
+    // Si le message est vide, nous ajoutons une classe 'empty-message'
+    $visibilityClass = empty($message) ? 'empty-message' : '';
+?>
+
+<div class="game-message <?= $messageClass ?> <?= $visibilityClass ?>">
+<h2><?= !empty($message) ? htmlspecialchars($message) : '&nbsp;' ?></h2>
+ 
+    <?php if ($isGameOver && !empty($message)): ?>
+<p>🎉 Bravo ! Votre résultat est prêt.</p>
 <?php endif; ?>
+</div>
+
+
 <div class="user-info">
     <?php if ($isLoggedIn): ?>
         <p>Bienvenue, <?= htmlspecialchars($username) ?> !</p>
