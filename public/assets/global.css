@@ -5,10 +5,11 @@ body {
     font-family: Arial, sans-serif;
     margin: 0; /* Important : supprime la marge par défaut du navigateur */
     min-height: 100vh;
-    background-color: #cbf0e3; /* Fond léger */
-    color: #076117;
+    background-color: #cbf0e3; 
+    color:#004d99;
     /* --- Ajout du fond Snoopy --- */
-    background-image: url('images/snoopy_content.png'); 
+    background-image:linear-gradient(rgba(204, 234, 219, 0.9), rgba(204, 234, 219, 0.9)),
+     url('images/snoopy_content.png'); 
     background-repeat: repeat; /* La propriété clé pour la répétition */
     
    /*reduction de snoopy*/
@@ -17,7 +18,7 @@ body {
 
 a {
     text-decoration: none; 
-    color: #e7840a;
+    color:#004d99;;
     transition: color 0.3s;
 }
 
@@ -46,7 +47,7 @@ a:hover {
 
 
 .main-nav .nav-list li:first-child .nav-link {
-    font-size: 1.5em; /* Vous pouvez ajuster cette valeur */
+    font-size: 1.5em; 
     line-height: 1; /* Assure que l'icône ne crée pas trop d'espace vertical */
 }
 .nav-list {
@@ -58,8 +59,9 @@ a:hover {
 }
 
 .nav-link {
-    font-size: 1.1em;
-    font-weight: 500;
+    font-size: 1.3em;
+    /*font-weight: 500;*/
+    font-weight: bold;
     padding: 5px 0;
     color: #320cb0;
 }
@@ -81,6 +83,7 @@ a:hover {
 }
 
 /* --- LE BOUTON/LA CARTE (Container) --- */
+
 .card-button {
     background: none;
     border: none;
@@ -155,7 +158,7 @@ a:hover {
 /* État "Trouvé" : Ajoute un style visuel et empêche le clic */
 .card.matched .card-inner {
     /* Retirez l'opacité si elle rend la carte trop pâle */
-    /* opacity: 0.5; <-- À enlever ou commenter */
+    /* opacity: 0.5;  */
     
     /* Le style visuel pour indiquer que la carte est trouvée */
     box-shadow: 0 4px 15px rgba(0, 21, 128, 0.6); /* Ajout d'une ombre plus marquée */
@@ -165,14 +168,13 @@ a:hover {
 
 /* Assure que la face arrière est bien à son point de départ 0deg (pas obligatoire mais utile) */
 .card-back {
-    /* ... autres styles ... */
-    transform: rotateY(0deg); /* <--- AJOUTER CETTE LIGNE */
+
+    transform: rotateY(0deg); 
 }
 
 /* Assurez-vous que le conteneur principal permet la rotation 3D */
 .card {
-    /* Ajouter la perspective au conteneur le plus externe pour la compatibilité */
-    /*perspective: 1000px; /* <--- AJOUTER CETTE LIGNE, MÊME SI ELLE EST DANS .card-button */
+    
     width: 100%;
     height: 100%;
 }
@@ -189,13 +191,14 @@ a:hover {
 }
 
 .user-info {
-    color:rgb(6, 71, 33);
+    color:#004d99;
+    margin-left: 30px;/*marge*/
     font-size:1.5em;
     font-weight: bold;
 }
 .action-block-continue p {
     /* Ajuster la marge pour que le texte soit bien aligné avec le bouton Continuer */
-    color:rgb(6, 71, 33);
+    color:#004d99;
     margin-right: 15px;
     display: inline-block;
     font-weight: bold;
@@ -219,7 +222,45 @@ a:hover {
 .new-game-button {
     background-color: #341ceb; 
     color: rgb(228, 235, 32);
+    font-size: 1.2em; /*essai de taille*/
+    font-weight: bold;
 }
+
+/*message quand 2 cartes sont retournées*/
+
+.game-message {
+    /* Centrer le bloc de message au-dessus de la grille */
+    max-width: 500px; 
+    margin: 15px auto; 
+    padding: 15px 25px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.game-message h2 {
+    font-size: 1.5em;
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Style pour la réussite (Paire trouvée) */
+.game-message.success-message {
+    background-color: #d4edda; /* Vert très clair */
+    color: #155724; /* Vert foncé */
+    border: 2px solid #c3e6cb;
+}
+
+/* Style pour l'échec (Pas de paire) */
+.game-message.error-message {
+    background-color: #f8d7da; /* Rouge très clair */
+    color: #721c24; /* Rouge foncé */
+    border: 2px solid #f5c6cb;
+}
+
+
+
 .fixed-continue-prompt {
     /* Propriété clé : rend le conteneur fixe par rapport à la fenêtre */
     position: fixed; 
@@ -241,7 +282,7 @@ a:hover {
 }
 
 
-/* Styles spécifiques pour la page de fin de jeu */
+/* Styles spécifiques pour la page de fin de jeu game_over.php*/
 .game-over-container {
     max-width: 600px;
     margin: 60px auto;
@@ -270,7 +311,7 @@ h1 {
 
 .congratulations {
     font-size: 1.4em;
-    color: #28a745;
+    color: #004d99;
     font-weight: bold;
     margin-bottom: 15px;
 }
@@ -366,7 +407,7 @@ h1 {
 }
 .input-pairs {
     padding: 10px;
-    border: 2px solid #ccc;
+    border: 2px solid #2b16e3;
     border-radius: 8px;
     width: 100px;
     text-align: center;
@@ -374,8 +415,8 @@ h1 {
 }
 .button-start {
     padding: 12px 25px;
-    background-color: #4CAF50;
-    color: white;
+    background-color:#075aff;
+    color: #f8e40e;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -383,7 +424,8 @@ h1 {
     transition: background-color 0.3s ease;
 }
 .button-start:hover {
-    background-color: #45a049;
+    background-color: #f8e40e;
+    color: #075aff;
 }
 .info-text {
     margin-top: 20px;
@@ -395,17 +437,26 @@ h1 {
 .content-box {
     /* Fond blanc pour faire ressortir le contenu */
     background-color: #ffffff; 
-    /* Bordure légèrement visible */
     border: 1px solid #ccc; 
-    
     border-radius: 20px; 
-    
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     /* Marge intérieure pour que le contenu ne touche pas les bords */
     padding: 30px; 
     /* Centrer le conteneur et limiter sa largeur */
     max-width: 800px; 
     margin: 20px auto; 
+}
+
+
+.welcome-message {
+    font-size: 1.3em; 
+    font-weight: bold; 
+    color: #17a2b8; 
+    text-align: center;
+    padding: 20px;
+    background-color: #f0f8ff; 
+    border-radius: 10px;
+    margin-top: 20px; 
 }
 
 /*style pour leaderboard.php*/
@@ -448,6 +499,78 @@ h1 {
 hr {
     border: 0;
     height: 1px;
-    background: #ccc;
+    background: #066613;
     margin: 25px 0;
+}
+
+/*pour register.php formulaire d'inscription*/
+
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Groupement Label + Input */
+.register-form .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Style des labels */
+.register-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 1.1em;
+}
+
+/* Style des champs de saisie (input) */
+.register-form input[type="text"] {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px; 
+    font-size: 1.1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Effet au focus sur l'input */
+.register-form input[type="text"]:focus {
+    border-color: #007bff; 
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    outline: none;
+}
+
+/* Style du bouton de soumission */
+.register-form .submit-button {
+    background-color: #2e0da5; 
+    padding: 15px;
+    color: yellow;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+.register-form .submit-button:hover {
+    background-color: #45a0a0;
+}
+
+.register-form .submit-button:active {
+    transform: translateY(1px);
+}
+
+/* Style du message d'erreur */
+.error-message {
+    color: #cc0000;
+    background-color: #ffeaea;
+    border: 1px solid #cc0000;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
 }

@@ -37,9 +37,9 @@ $isLoggedIn = isset($_SESSION['user_id']);
                         <?= htmlspecialchars($_SESSION['username']) ?> 👤
                     </a>
                 </li>
-                <li><a href="/logout" class="nav-link logout-link">Déconnexion</a></li>
+                <li><a href="/logout" class="nav-link logout-link">Déconnexion 🔓</a></li>
             <?php else: ?>
-                <li><a href="/register" class="nav-link">Inscription</a></li>
+                <li><a href="/register" class="nav-link">Inscription 🖊️</a></li>
             <?php endif; ?>
             
             </ul> 

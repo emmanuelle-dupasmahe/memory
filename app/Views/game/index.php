@@ -18,7 +18,14 @@ $username = $_SESSION['username'] ?? 'Invité';
 ?>
 
 <?php if (!empty($message)): ?>
-<div class="game-message">
+
+
+    <?php 
+        // Déterminer la classe : 'success' si "Bravo !", 'error' sinon
+        $messageClass = (strpos($message, 'Bravo') !== false) ? 'success-message' : 'error-message';
+    ?>
+
+<div class="game-message <?= $messageClass ?>"> 
     <h2><?= htmlspecialchars($message) ?></h2>
     
     <?php if ($isGameOver): ?>
@@ -55,7 +62,6 @@ $username = $_SESSION['username'] ?? 'Invité';
     // Bouton "Nouveau Jeu"
     ?>
     <div class="action-block-new">
-        <!-- CORRECTION: Utilisation d'un lien (GET) vers /game pour la sémantique -->
         <a href="<?= $newGameUrl ?>" class="button new-game-button link-button">Nouveau Jeu</a>
     </div>
 </div>

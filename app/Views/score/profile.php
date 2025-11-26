@@ -58,6 +58,6 @@ $history = $profile['scores_history'] ?? [];
     </div>
 
 <?php else: ?>
-    <p>Bienvenue, <?= htmlspecialchars($username) ?> ! Vous n'avez pas encore terminé de partie. Commencez une partie pour enregistrer votre score et débloquer vos statistiques !</p>
+    <p class="welcome-message">Bienvenue, <?= htmlspecialchars($username) ?> ! Vous n'avez pas encore terminé de partie. Commencez une partie pour enregistrer votre score et débloquer vos statistiques !</p>
 <?php endif; ?>
 </div>
