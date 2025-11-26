@@ -226,6 +226,11 @@ a:hover {
     font-weight: bold;
 }
 
+.new-game-button:hover {
+    background-color: rgb(228, 235, 32);
+    color: #341ceb;
+}
+
 /*message quand 2 cartes sont retournées*/
 
 .game-message {
