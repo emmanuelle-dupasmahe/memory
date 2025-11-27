@@ -712,7 +712,7 @@ hr {
         font-size: 1.1em;
     }
 
-    /*pour le tableau des classements*/
+    /*pour le tableau des classements LEADERBORD.PHP*/
 
     .content-box.leaderboard-page {
         /* Utilisez presque toute la largeur disponible pour le contenu */
@@ -734,7 +734,7 @@ hr {
     }
 
     .table-responsive {
-    /* Ceci est la propriété clé : permet le défilement horizontal si le contenu déborde */
+    /* permet le défilement horizontal si le contenu déborde */
     overflow-x: auto; 
     /* Ajoute un petit décalage en bas pour que la barre de défilement ne coupe pas les données */
     padding-bottom: 10px;
