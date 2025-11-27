@@ -7,7 +7,8 @@
 <?php if (empty($topScores)): ?>
     <p>Aucun score enregistré pour l'instant. Soyez le premier à jouer !</p>
 <?php else: ?>
-    
+
+    <div class="table-responsive">
     <table class="leaderboard-table">
         <thead>
             <tr>
@@ -29,6 +30,7 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+</div>
     
 <?php endif; ?>
 </div>

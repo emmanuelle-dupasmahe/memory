@@ -611,6 +611,51 @@ hr {
 
 /*RESPONSIVE*/
 
+@media (max-width: 768px) {
+    /* --- EN-TÊTE PRINCIPAL ET NAVIGATION --- */
+    .main-header {
+        /* Permet au titre et à la nav de s'empiler */
+        flex-direction: column;
+        align-items: flex-start; /* Aligner tout à gauche */
+        padding: 10px 15px; 
+    }
+
+    .nav-list {
+        /* La liste passe à la verticale */
+        flex-direction: column;
+        align-items: flex-start; 
+        width: 100%; /* Occuper toute la largeur disponible */
+        margin-top: 10px;
+        gap: 0; /* Supprimer l'espace horizontal entre les liens */
+    }
+
+    .nav-link {
+        padding: 5px 0; /* Plus de padding vertical pour chaque lien */
+    }
+
+    /* --- TOP BARRE DE JEU (Bienvenue + Nouveau Jeu) --- */
+    .top-bar-game {
+        /* Empiler l'info utilisateur et le bouton */
+        flex-direction: column;
+        align-items: center; /* Centrer les éléments */
+        max-width: 100%; /* Occuper toute la largeur */
+        padding: 5px 15px; 
+    }
+    
+    .user-info {
+        font-size: 1.2em; /* Réduire la taille de la police */
+        text-align: center;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .centered-action {
+        width: 100%;
+        text-align: center;
+        margin-top: 5px;
+    }
+}   
+
 @media (max-width: 992px) {
     /* Sur les tablettes et plus petits, réduisez la largeur maximale */
     .memory-grid {
@@ -626,4 +671,73 @@ hr {
         grid-template-columns: repeat(4, 1fr); /* Passez à 4 colonnes */
         gap: 10px; /* Réduisez l'espace pour gagner de la place */
     }
+
+    /* --- ADAPTATION DES CONTENEURS DE PAGE --- */
+
+    .content-box, 
+    .game-over-container,
+    .options-container {
+        /* Utiliser 90% de la largeur pour donner de la marge autour */
+        max-width: 90%; 
+        margin: 20px auto; /* Conserver le centrage */
+        padding: 20px 15px; /* Réduire le padding intérieur */
+        border-radius: 10px; /* Réduire le border-radius */
+    }
+    
+    /* --- FORMULAIRES ET BOUTONS --- */
+    
+    /* Boutons de la page Game Over (les empiler verticalement) */
+    .actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    /* Boutons d'action pour prendre toute la largeur */
+    .button-action,
+    .register-form .submit-button,
+    .button-start {
+        width: 100%;
+        box-sizing: border-box; /* Inclure padding et border dans la largeur */
+    }
+    
+    /* Le message "Continuer" qui est fixed en bas */
+    .fixed-continue-prompt {
+        width: 90%; /* Occuper 90% de la largeur */
+        text-align: center;
+        /* Le transform: translateX(-50%) + left: 50% gère déjà le centrage */
+    }
+    
+    /* Réduire la taille de la police pour les petits messages */
+    .game-message h2 {
+        font-size: 1.1em;
+    }
+
+    /*pour le tableau des classements*/
+
+    .content-box.leaderboard-page {
+        /* Utilisez presque toute la largeur disponible pour le contenu */
+        max-width: 95%; 
+        padding: 15px; /* Réduire le padding */
+    }
+
+    
+    /* le tableau : réduire sa police et son padding */
+    .leaderboard-table {
+        font-size: 0.9em; /* Réduire la taille de la police pour gagner de l'espace */
+        /* Supprimer la largeur à 100% pour permettre à la colonne de garder sa taille */
+        width: 100%; 
+    }
+
+    .leaderboard-table th, 
+    .leaderboard-table td {
+        padding: 8px 5px; /* Réduire le padding des cellules */
+    }
+
+    .table-responsive {
+    /* Ceci est la propriété clé : permet le défilement horizontal si le contenu déborde */
+    overflow-x: auto; 
+    /* Ajoute un petit décalage en bas pour que la barre de défilement ne coupe pas les données */
+    padding-bottom: 10px;
+    }
 }
+
