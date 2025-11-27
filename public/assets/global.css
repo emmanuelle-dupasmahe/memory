@@ -180,6 +180,37 @@ a:hover {
 }
 
 /* --- BARRE D'ACTION EN HAUT --- */
+
+
+.top-bar-game {
+    
+    display: flex;
+    max-width: 1200px; 
+    margin: 10px auto; 
+    justify-content: space-between;
+    /* Assure l'alignement vertical */
+    align-items: center; 
+    /* Ajoutez un peu de marge intérieure pour que le contenu ne colle pas aux bords de l'écran sur les petites résolutions */
+    padding: 0 15px; 
+}
+
+/* Mise à jour pour que le texte Bienvenue ne déforme pas l'alignement */
+.user-info {
+    color: #004d99;
+    margin-left: 0;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+/* Mise à jour pour le conteneur du bouton (pas besoin de text-align ici) */
+.centered-action {
+    /* Supprimer les styles de centrage et de largeur maximale, car c'est géré par .top-bar-game */
+    margin: 0;
+    max-width: none;
+    text-align: right; /* Assurez-vous que le bouton est à droite si c'est ce que vous voulez */
+}
+
+
 .action-bar {
     display: flex; /* Active Flexbox */
     justify-content: space-between; /* Espace les blocs d'actions */
@@ -190,12 +221,6 @@ a:hover {
     /*border-bottom: 1px solid #ccc;*/
 }
 
-.user-info {
-    color:#004d99;
-    margin-left: 30px;/*marge*/
-    font-size:1.5em;
-    font-weight: bold;
-}
 .action-block-continue p {
     /* Ajuster la marge pour que le texte soit bien aligné avec le bouton Continuer */
     color:#004d99;
@@ -204,7 +229,7 @@ a:hover {
     font-weight: bold;
 }
 
-/* Style de base pour les boutons si vous n'en avez pas déjà un pour .button */
+/* Style de base pour les boutons */
 .button {
     padding: 10px 20px;
     font-size: 16px;
@@ -218,11 +243,12 @@ a:hover {
     background-color: #341ceb; 
     color:#dffd35;
 }
+/*bouton nouveau jeu*/
 
 .new-game-button {
     background-color: #341ceb; 
     color: rgb(228, 235, 32);
-    font-size: 1.2em; /*essai de taille*/
+    font-size: 1.2em; 
     font-weight: bold;
 }
 
@@ -263,7 +289,7 @@ a:hover {
     color: #721c24; 
     border: 2px solid #f5c6cb;
 }
-/*ajout pour éviter que le plateau de jeu ne bouge quand les messages s'affichent*/
+/*pour EVITER QUE LE PLATEAU NE BOUGE quand les messages s'affichent*/
 
 .game-message.empty-message {
     /* La transparence rend l'intérieur invisible */
@@ -288,7 +314,7 @@ a:hover {
     left: 50%;
     transform: translateX(-50%); /* Décalage de 50% vers la gauche pour centrer l'élément */
     
-    /* Style pour attirer l'attention */
+    
     background-color: #dffd35; 
     border: 3px solid #341ceb; 
     padding: 15px 25px;
@@ -298,7 +324,7 @@ a:hover {
 }
 
 
-/* Styles spécifiques pour la page de fin de jeu game_over.php*/
+/* Styles spécifiques pour la page de fin de jeu GAME-OVER.php*/
 .game-over-container {
     max-width: 600px;
     margin: 60px auto;
@@ -398,7 +424,7 @@ h1 {
     transform: translateY(-2px);
 }
 
-/*style pour la page options */
+/*style pour la PAGE OPTIONS */
 
 .options-container {
     max-width: 500px;
@@ -464,6 +490,7 @@ h1 {
     margin: 20px auto; 
 }
 
+/*bienvenue sur la page d'inscription*/
 
 .welcome-message {
     font-size: 1.3em; 
@@ -582,7 +609,8 @@ hr {
     transform: translateY(1px);
 }
 
-/*responsive*/
+/*RESPONSIVE*/
+
 @media (max-width: 992px) {
     /* Sur les tablettes et plus petits, réduisez la largeur maximale */
     .memory-grid {

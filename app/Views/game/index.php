@@ -33,6 +33,7 @@ $username = $_SESSION['username'] ?? 'Invité';
 <?php endif; ?>
 </div>
 
+<div class="top-bar-game"> 
 
 <div class="user-info">
     <?php if ($isLoggedIn): ?>
@@ -42,6 +43,14 @@ $username = $_SESSION['username'] ?? 'Invité';
     <?php endif; ?>
 </div>
 
+ <?php 
+    // Bouton "Nouveau Jeu"
+    ?>
+    <div class="centered-action">
+        <a href="<?= $newGameUrl ?>" class="button new-game-button link-button">Nouveau Jeu</a>
+    </div>
+
+</div>
 <div class="action-bar">
     <?php 
     // Bouton "Continuer" 
@@ -58,15 +67,7 @@ $username = $_SESSION['username'] ?? 'Invité';
     </div>
     <?php endif; ?>
 
-
-    <?php 
-    // Bouton "Nouveau Jeu"
-    ?>
-    <div class="action-block-new">
-        <a href="<?= $newGameUrl ?>" class="button new-game-button link-button">Nouveau Jeu</a>
     </div>
-</div>
-
 
 <div id="memory-grid" class="memory-grid">
     <?php foreach ($board as $cardData): ?>
